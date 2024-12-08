@@ -1,0 +1,12 @@
+Explication des modifications:
+
+
+Ajout des slots : Les slots onOrderAdded, onOrderRemoved, handleSocketReadyRead, handleClientCommand, et serveOrder sont ajoutés dans la classe MainWindow pour gérer les événements liés aux commandes et à la communication avec le serveur.
+
+Gestion des commandes : La méthode handleClientCommand traite les commandes reçues pour un client et une table, affiche la commande dans une QListWidget et génère un cercle graphique pour illustrer l'action. Elle utilise QPair pour stocker les éléments de la commande.
+
+Envoi des commandes au serveur via socket : Lorsqu'une commande est ajoutée ou retirée, elle est envoyée au serveur via le socket TCP avec les commandes ORDER_ADDED et ORDER_REMOVED.
+
+Traitement des données reçues via socket : Dans le slot handleSocketReadyRead, nous traitons les messages reçus du serveur (par exemple, la notification d'une commande prête). Vous pouvez adapter cette logique pour répondre aux besoins spécifiques de votre application.
+
+Objectifs : permettre de gérer les interactions côté client, l'envoi et la réception de commandes via socket, ainsi que la mise à jour graphique des commandes.

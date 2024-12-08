@@ -1,0 +1,18 @@
+Voici un résumé de la logique que vous souhaitez implémenter :
+
+Sélection d'une table disponible
+
+Les tables sont identifiées par leur ID, leur capacité (capacity), et leur disponibilité (isOccupied).
+Un client, avec une taille de groupe définie par getGroupSize(), cherche une table avec une capacité suffisante et qui n'est pas occupée.
+Installation du client
+
+Une fois une table trouvée, le client s'installe, et la table passe en état occupé (setOccupied(true)).
+Commande par le client
+
+Le client consulte le menu via MenuController et passe une commande, qui est ajoutée dans le modèle Order.
+Notification de la cuisine
+
+La commande est envoyée au serveur via un socket.
+Retour de la cuisine
+
+La cuisine signale la commande prête, en réponse à l'ID de la table, ce qui crée un indicateur visuel (objet circulaire rouge) sur la table du client.

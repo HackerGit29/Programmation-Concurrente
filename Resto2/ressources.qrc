@@ -1,0 +1,92 @@
+<RCC>
+  <qresource>
+    <file>build/Desktop_Qt_MinGW_64_bit_31ccaa-Release/release/img/exclamation.png</file>
+    <file>build/Desktop_Qt_MinGW_64_bit_31ccaa-Release/release/img/pause.png</file>
+    <file>build/Desktop_Qt_MinGW_64_bit_31ccaa-Release/release/img/parametres.png</file>
+    <file>build/Desktop_Qt_MinGW_64_bit_31ccaa-Release/release/img/alimentation-saine.ico</file>
+    <file>build/Desktop_Qt_MinGW_64_bit_31ccaa-Release/release/img/market.jpeg</file>
+    <file>build/Desktop_Qt_MinGW_64_bit_31ccaa-Release/release/sounds/8-bit-video-game-points-version-1-145826.mp3</file>
+    <file>build/Desktop_Qt_MinGW_64_bit_31ccaa-Release/release/sounds/90s-game-ui-6-185099.mp3</file>
+    <file>build/Desktop_Qt_MinGW_64_bit_31ccaa-Release/release/sounds/achievement-video-game-type-1-230515.mp3</file>
+    <file>build/Desktop_Qt_MinGW_64_bit_31ccaa-Release/release/sounds/collect-points-190037.mp3</file>
+    <file>build/Desktop_Qt_MinGW_64_bit_31ccaa-Release/release/sounds/correct-2-46134.mp3</file>
+    <file>build/Desktop_Qt_MinGW_64_bit_31ccaa-Release/release/sounds/game-bonus-144751.mp3</file>
+    <file>build/Desktop_Qt_MinGW_64_bit_31ccaa-Release/release/sounds/game-start-6104.mp3</file>
+    <file>build/Desktop_Qt_MinGW_64_bit_31ccaa-Release/release/sounds/good-6081.mp3</file>
+    <file>build/Desktop_Qt_MinGW_64_bit_31ccaa-Release/release/sounds/item-pick-up-38258.mp3</file>
+    <file>build/Desktop_Qt_MinGW_64_bit_31ccaa-Release/release/sounds/menu-selection-102220.mp3</file>
+    <file>build/Desktop_Qt_MinGW_64_bit_31ccaa-Release/release/sounds/short-success-sound-glockenspiel-treasure-video-game-6346.mp3</file>
+    <file>build/Desktop_Qt_MinGW_64_bit_31ccaa-Release/release/sounds/winfantasia-6912.mp3</file>
+  </qresource>
+  <qresource>
+    <file>build/Desktop_Qt_MinGW_64_bit_31ccaa-Release/release/img/alimentation-saine.png</file>
+    <file>build/Desktop_Qt_MinGW_64_bit_31ccaa-Release/release/img/aliments.png</file>
+    <file>build/Desktop_Qt_MinGW_64_bit_31ccaa-Release/release/img/avance-rapide.png</file>
+    <file>build/Desktop_Qt_MinGW_64_bit_31ccaa-Release/release/img/boite-a-pain.png</file>
+    <file>build/Desktop_Qt_MinGW_64_bit_31ccaa-Release/release/img/bouteille-de-lait.png</file>
+    <file>build/Desktop_Qt_MinGW_64_bit_31ccaa-Release/release/img/bouteille-de-vin.png</file>
+    <file>build/Desktop_Qt_MinGW_64_bit_31ccaa-Release/release/img/bouteille-en-plastique.png</file>
+    <file>build/Desktop_Qt_MinGW_64_bit_31ccaa-Release/release/img/bouton-darret (1).png</file>
+    <file>build/Desktop_Qt_MinGW_64_bit_31ccaa-Release/release/img/bouton-darret.png</file>
+    <file>build/Desktop_Qt_MinGW_64_bit_31ccaa-Release/release/img/bouton-davance-rapide.png</file>
+    <file>build/Desktop_Qt_MinGW_64_bit_31ccaa-Release/release/img/burger.png</file>
+    <file>build/Desktop_Qt_MinGW_64_bit_31ccaa-Release/release/img/cercle.png</file>
+    <file>build/Desktop_Qt_MinGW_64_bit_31ccaa-Release/release/img/cercle_2.png</file>
+    <file>build/Desktop_Qt_MinGW_64_bit_31ccaa-Release/release/img/chaise-en-bois.png</file>
+    <file>build/Desktop_Qt_MinGW_64_bit_31ccaa-Release/release/img/client.png</file>
+    <file>build/Desktop_Qt_MinGW_64_bit_31ccaa-Release/release/img/client_2.png</file>
+    <file>build/Desktop_Qt_MinGW_64_bit_31ccaa-Release/release/img/commis.png</file>
+    <file>build/Desktop_Qt_MinGW_64_bit_31ccaa-Release/release/img/comptoir-de-bar.png</file>
+    <file>build/Desktop_Qt_MinGW_64_bit_31ccaa-Release/release/img/contrer.png</file>
+    <file>build/Desktop_Qt_MinGW_64_bit_31ccaa-Release/release/img/des-portes.png</file>
+    <file>build/Desktop_Qt_MinGW_64_bit_31ccaa-Release/release/img/du-jus-dorange.png</file>
+    <file>build/Desktop_Qt_MinGW_64_bit_31ccaa-Release/release/img/evier.png</file>
+    <file>build/Desktop_Qt_MinGW_64_bit_31ccaa-Release/release/img/fleurs (1).png</file>
+    <file>build/Desktop_Qt_MinGW_64_bit_31ccaa-Release/release/img/fleurs.png</file>
+    <file>build/Desktop_Qt_MinGW_64_bit_31ccaa-Release/release/img/food.png</file>
+    <file>build/Desktop_Qt_MinGW_64_bit_31ccaa-Release/release/img/four.png</file>
+    <file>build/Desktop_Qt_MinGW_64_bit_31ccaa-Release/release/img/frigo.png</file>
+    <file>build/Desktop_Qt_MinGW_64_bit_31ccaa-Release/release/img/gants.png</file>
+    <file>build/Desktop_Qt_MinGW_64_bit_31ccaa-Release/release/img/image-removebg-preview (1).png</file>
+    <file>build/Desktop_Qt_MinGW_64_bit_31ccaa-Release/release/img/inventaire (1).png</file>
+    <file>build/Desktop_Qt_MinGW_64_bit_31ccaa-Release/release/img/inventaire.png</file>
+    <file>build/Desktop_Qt_MinGW_64_bit_31ccaa-Release/release/img/jouer.png</file>
+    <file>build/Desktop_Qt_MinGW_64_bit_31ccaa-Release/release/img/la-fenetre.png</file>
+    <file>build/Desktop_Qt_MinGW_64_bit_31ccaa-Release/release/img/la-vaisselle.png</file>
+    <file>build/Desktop_Qt_MinGW_64_bit_31ccaa-Release/release/img/lave-vaisselle (1).png</file>
+    <file>build/Desktop_Qt_MinGW_64_bit_31ccaa-Release/release/img/lave-vaisselle.png</file>
+    <file>build/Desktop_Qt_MinGW_64_bit_31ccaa-Release/release/img/les-plantes.png</file>
+    <file>build/Desktop_Qt_MinGW_64_bit_31ccaa-Release/release/img/les-plats-du-jour.png</file>
+    <file>build/Desktop_Qt_MinGW_64_bit_31ccaa-Release/release/img/maitre.png</file>
+    <file>build/Desktop_Qt_MinGW_64_bit_31ccaa-Release/release/img/menu.png</file>
+    <file>build/Desktop_Qt_MinGW_64_bit_31ccaa-Release/release/img/meridienne.png</file>
+    <file>build/Desktop_Qt_MinGW_64_bit_31ccaa-Release/release/img/mixeur (1).png</file>
+    <file>build/Desktop_Qt_MinGW_64_bit_31ccaa-Release/release/img/mixeur.png</file>
+    <file>build/Desktop_Qt_MinGW_64_bit_31ccaa-Release/release/img/mur.png</file>
+    <file>build/Desktop_Qt_MinGW_64_bit_31ccaa-Release/release/img/mur-de-briques.png</file>
+    <file>build/Desktop_Qt_MinGW_64_bit_31ccaa-Release/release/img/nouveau-compte.png</file>
+    <file>build/Desktop_Qt_MinGW_64_bit_31ccaa-Release/release/img/panneau-stop.png</file>
+    <file>build/Desktop_Qt_MinGW_64_bit_31ccaa-Release/release/img/petit-dejeuner.png</file>
+    <file>build/Desktop_Qt_MinGW_64_bit_31ccaa-Release/release/img/placard (1).png</file>
+    <file>build/Desktop_Qt_MinGW_64_bit_31ccaa-Release/release/img/placard.png</file>
+    <file>build/Desktop_Qt_MinGW_64_bit_31ccaa-Release/release/img/plat.png</file>
+    <file>build/Desktop_Qt_MinGW_64_bit_31ccaa-Release/release/img/porte.png</file>
+    <file>build/Desktop_Qt_MinGW_64_bit_31ccaa-Release/release/img/porte-de-sortie.png</file>
+    <file>build/Desktop_Qt_MinGW_64_bit_31ccaa-Release/release/img/pot.png</file>
+    <file>build/Desktop_Qt_MinGW_64_bit_31ccaa-Release/release/img/pot-de-fleur.png</file>
+    <file>build/Desktop_Qt_MinGW_64_bit_31ccaa-Release/release/img/rang.png</file>
+    <file>build/Desktop_Qt_MinGW_64_bit_31ccaa-Release/release/img/R-removebg-preview.png</file>
+    <file>build/Desktop_Qt_MinGW_64_bit_31ccaa-Release/release/img/salade (1).png</file>
+    <file>build/Desktop_Qt_MinGW_64_bit_31ccaa-Release/release/img/salade (2).png</file>
+    <file>build/Desktop_Qt_MinGW_64_bit_31ccaa-Release/release/img/salade.png</file>
+    <file>build/Desktop_Qt_MinGW_64_bit_31ccaa-Release/release/img/serveur.png</file>
+    <file>build/Desktop_Qt_MinGW_64_bit_31ccaa-Release/release/img/sol.png</file>
+    <file>build/Desktop_Qt_MinGW_64_bit_31ccaa-Release/release/img/table.png</file>
+    <file>build/Desktop_Qt_MinGW_64_bit_31ccaa-Release/release/img/table_1.png</file>
+    <file>build/Desktop_Qt_MinGW_64_bit_31ccaa-Release/release/img/table_2.png</file>
+    <file>build/Desktop_Qt_MinGW_64_bit_31ccaa-Release/release/img/table_3..png</file>
+    <file>build/Desktop_Qt_MinGW_64_bit_31ccaa-Release/release/img/table-ronde.png</file>
+    <file>build/Desktop_Qt_MinGW_64_bit_31ccaa-Release/release/img/ustensiles.png</file>
+    <file>build/Desktop_Qt_MinGW_64_bit_31ccaa-Release/release/img/vase.png</file>
+  </qresource>
+</RCC>

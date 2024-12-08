@@ -1,0 +1,283 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>GameSettings</class>
+ <widget class="QDialog" name="GameSettings">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>400</width>
+    <height>300</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Paramètres de Simulation</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">/* Background principal */
+QWidget {
+    background-color: #1e1e2e;
+    color: #ffffff;
+}
+
+/* Boutons */
+QPushButton {
+    background-color: #3a3a5f;
+    selection-color: red;
+    border: 2px solid #5e5edc;
+    border-radius: 10px;
+    padding: 10px;
+    color: white;
+    font: bold 14px &quot;Segoe UI&quot;;
+}
+
+QPushButton:hover {
+    background-color: #7366ff;
+    border-color: #8080ff;
+}
+
+QPushButton:pressed {
+    background-color: #282850;
+}
+
+/* Labels */
+QLabel {
+    font: bold 16px &quot;Segoe UI&quot;;
+    color: #ffffff;
+    background-color: transparent;
+    text-align: center;
+}
+
+/* Frames */
+QFrame {
+    background-color: #2e2e3e;
+    border: 2px solid #5e5edc;
+    border-radius: 10px;
+}
+
+/* Progress Bars */
+QProgressBar {
+    border: 2px solid #3a3a5f;
+    border-radius: 5px;
+    background: #2e2e3e;
+    text-align: center;
+    color: white;
+    font: bold 12px &quot;Segoe UI&quot;;
+}
+
+QProgressBar::chunk {
+    background-color: #5e5edc;
+    width: 20px;
+}
+
+/* Text Browsers */
+QTextBrowser {
+    border: 2px solid #3a3a5f;
+    border-radius: 10px;
+    background-color: #2e2e3e;
+    color: white;
+    font: 12px &quot;Segoe UI&quot;;
+    padding: 10px;
+}
+
+/* SpinBox */
+QSpinBox {
+    background-color: #2e2e3e;
+    border: 2px solid #5e5edc;
+    border-radius: 5px;
+    color: white;
+    padding: 5px;
+}
+
+/* TimeEdit */
+QTimeEdit {
+    background-color: #2e2e3e;
+    border: 2px solid #5e5edc;
+    border-radius: 5px;
+    color: white;
+    padding: 5px;
+}
+
+/* CheckBox */
+QCheckBox {
+    color: white;
+    spacing: 10px;
+}
+
+/* ComboBox */
+QComboBox {
+    background-color: #2e2e3e;
+    border: 2px solid #5e5edc;
+    border-radius: 5px;
+    color: white;
+    padding: 5px;
+}
+
+/* Slider */
+QSlider::groove:horizontal {
+    border: 1px solid #5e5edc;
+    height: 8px;
+    background: #2e2e3e;
+    border-radius: 4px;
+}
+
+QSlider::handle:horizontal {
+    background: #5e5edc;
+    border: 1px solid #5e5edc;
+    width: 18px;
+    margin: -8px 0;
+    border-radius: 9px;
+}
+
+/* Toggle Button */
+QCheckBox::indicator:checked {
+    image: url(:/images/toggle_on.png);
+}
+
+QCheckBox::indicator:unchecked {
+    image: url(:/images/toggle_off.png);
+}
+</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QLabel" name="titleLabel">
+     <property name="text">
+      <string>Paramètres de Simulation</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignmentFlag::AlignCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QFrame" name="settingsFrame">
+     <property name="frameShape">
+      <enum>QFrame::Shape::StyledPanel</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Shadow::Raised</enum>
+     </property>
+     <layout class="QFormLayout" name="formLayout">
+      <item row="0" column="0">
+       <widget class="QLabel" name="startTimeLabel">
+        <property name="text">
+         <string>Heure de démarrage :</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QTimeEdit" name="startTimeEdit">
+        <property name="time">
+         <time>
+          <hour>0</hour>
+          <minute>0</minute>
+          <second>0</second>
+         </time>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="groupSizeLabel">
+        <property name="text">
+         <string>Maximum de personnes par groupe :</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QComboBox" name="groupSizeComboBox">
+        <property name="currentText">
+         <string>4</string>
+        </property>
+        <item>
+         <property name="text">
+          <string>4</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>8</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item row="3" column="0">
+       <widget class="QLabel" name="simulationSpeedLabel">
+        <property name="text">
+         <string>Vitesse de simulation :</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1">
+       <widget class="QComboBox" name="comboBox">
+        <item>
+         <property name="text">
+          <string>Normal</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>2</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>3</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>4</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>5</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>6</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>7</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QFrame" name="buttonsFrame">
+     <property name="frameShape">
+      <enum>QFrame::Shape::StyledPanel</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Shadow::Raised</enum>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <item>
+       <widget class="QPushButton" name="applyButton">
+        <property name="text">
+         <string>Appliquer</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="cancelButton">
+        <property name="text">
+         <string>Annuler</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
