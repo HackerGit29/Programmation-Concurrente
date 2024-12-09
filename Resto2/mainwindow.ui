@@ -561,14 +561,14 @@ li.checked::marker { content: &quot;\2612&quot;; }
         </widget>
        </item>
        <item>
-        <widget class="QLabel" name="clientNumber">
+        <widget class="QLabel" name="clientMoodLabel">
          <property name="text">
-          <string>Nombre de clients</string>
+          <string>🙂</string>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QProgressBar" name="clientNumberProgressBar">
+        <widget class="QProgressBar" name="clientMoodProgressBar">
          <property name="value">
           <number>50</number>
          </property>

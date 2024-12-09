@@ -179,16 +179,7 @@ void MainWindow::loadStockInfo() {
     }
 
     QString html = R"(
-        <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd">
-        <html><head><meta name="qrichtext" content="1" /><meta charset="utf-8" />
-        <style type="text/css">
-            p, li { white-space: pre-wrap; }
-            hr { height: 1px; border-width: 0; }
-            li.unchecked::marker { content: "\2610"; }
-            li.checked::marker { content: "\2612"; }
-        </style></head><body style=" font-family:'Segoe UI'; font-size:12px; font-weight:400; font-style:normal;">
-        <p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-family:'MS Shell Dlg 2'; font-size:8.25pt;">Niveaux de stock:</span>
-        </p>
+         <p>Niveaux de stock: </p>
     )";
 
     while (query.next()) {
@@ -196,16 +187,9 @@ void MainWindow::loadStockInfo() {
         int quantity = query.value(1).toInt();
 
         html += QString(R"(
-        <p style="margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">
-            <span style="font-family:'MS Shell Dlg 2'; font-size:8.25pt;">%1 (%2)</span>
-        </p>
+        <p>%1 (%2)</p>
     )").arg(ingredientName).arg(quantity);
     }
-
-    html += R"(
-        </body></html>
-    )";
-
     ui->stockInfoTextBrowser->setHtml(html);
 }
 
@@ -218,7 +202,7 @@ void MainWindow::loadInventoryData() {
     }
 
     QString html = R"(
-            <p> Inventaire: </p>
+            <p>Inventaire: </p>
     )";
 
     while (query.next()) {
@@ -226,7 +210,7 @@ void MainWindow::loadInventoryData() {
         int quantity = query.value(1).toInt();
 
         html += QString(R"(
-            <p  %1 (%2) </p>
+            <p>%1 (%2)</p>
         )").arg(itemName).arg(quantity);
     }
 
@@ -806,6 +790,8 @@ void MainWindow::updateTableSeatsProgressBar() {
 
 
 
+
+
 void MainWindow::updateCustomerInfo() {
     int totalClients = clients.size();
     int waitingClients = 0;
@@ -819,6 +805,9 @@ void MainWindow::updateCustomerInfo() {
         }
     }
 
+    // Calcul du taux de satisfaction (simple exemple)
+    int satisfactionRate = totalClients == 0 ? 0 : (seatedClients * 100) / totalClients;
+
     QString customerInfo = QString(
                                "<p><b>Infos clients:</b></p>"
                                "<p>- Total clients: %1</p>"
@@ -829,6 +818,36 @@ void MainWindow::updateCustomerInfo() {
                                .arg(seatedClients);
 
     ui->customerInfoTextBrowser->setHtml(customerInfo);
+
+    QString message;
+    QString color;
+
+
+    if (satisfactionRate == 100) {
+        message = "🙂";  // Très insatisfait
+        color = "green";
+    } else if (satisfactionRate > 80) {
+        message = "😶";  // Insatisfait
+        color = "orange";
+    } else if (satisfactionRate > 50) {
+        message = "😑";  // Moyennement satisfait
+        color = "yellow";
+    } else {
+        message = "😡";  // Satisfait
+        color = "red";
+    }
+
+    // Mettre à jour la ProgressBar
+    ui->clientMoodProgressBar->setValue(satisfactionRate);  // Met le pourcentage dans la ProgressBar
+
+
+    // Appliquer le style couleur
+    ui->clientMoodProgressBar->setStyleSheet(
+        QString("QProgressBar::chunk { background-color: %1; }").arg(color)
+        );
+
+    // Ajouter un emoji dans un QLabel, si souhaité
+    ui->clientMoodLabel->setText(message);  // Supposez que vous avez un QLabel nommé emojiLabel
 }
 
 
