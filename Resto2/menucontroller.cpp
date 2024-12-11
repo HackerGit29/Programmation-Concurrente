@@ -1,22 +1,13 @@
 #include "menucontroller.h"
-#include "client.h"
-#include <QTimer>
+#include "ingredient.h"
 #include <QSqlQuery>
 #include <QSqlError>
 #include <QDebug>
+#include <QRandomGenerator>
+
 
 MenuController::MenuController(Order *orderModel, const QList<Client*> &clients, QObject *parent)
     : QObject(parent), orderModel(orderModel), clients(clients) {}
-
-int MenuController::getGroupSize(int clientId) const {
-    for (const Client* client : clients) {  // Parcourir la liste des clients
-        if (client->getId() == clientId) {  // Vérifier l'identifiant du client
-            return client->getGroupSize();
-        }
-    }
-    return 0;  // Retourne 0 si aucun client ne correspond
-}
-
 
 QList<Menu> MenuController::getAllMenus() {
     QList<Menu> menuList;
@@ -35,50 +26,6 @@ QList<Menu> MenuController::getAllMenus() {
     return menuList;
 }
 
-void MenuController::setupRefreshTimer(QListWidget *menuListWidget, QListWidget *orderListWidget) {
-    QTimer *refreshTimer = new QTimer(this);
-
-    connect(refreshTimer, &QTimer::timeout, this, [this, menuListWidget]() {
-        menuListWidget->clear();
-        QList<Menu> menus = getAllMenus();
-        for (const Menu &menu : menus) {
-            menuListWidget->addItem(menu.getName());
-        }
-    });
-
-    connect(refreshTimer, &QTimer::timeout, this, [this, orderListWidget]() {
-        refreshOrderList(orderListWidget);
-    });
-
-    refreshTimer->start(2000); // Rafraîchit toutes les 2 secondes.
-}
-
-
-
-
-void MenuController::refreshOrderList(QListWidget *orderListWidget) {
-    orderListWidget->clear();
-
-    QList<OrderDetails> allOrders = orderModel->getOrders();
-
-    for (const auto &order : allOrders) {
-        QString description = QString("Client %1 - Table %2 (Groupe: %3)\n")
-        .arg(order.clientId)
-            .arg(order.tableId)
-            .arg(getGroupSize(order.clientId));
-
-        for (const auto &item : order.items) {
-            description += QString(" - %1 x%2\n")
-            .arg(item.first)  // Nom du plat
-                .arg(item.second);  // Quantité
-        }
-
-        orderListWidget->addItem(description);
-    }
-}
-
-
-
 void MenuController::createOrderFromMenu(QListWidget *menuListWidget, int clientId, int tableId) {
     QListWidgetItem *selectedItem = menuListWidget->currentItem();
     if (!selectedItem) {
@@ -87,8 +34,29 @@ void MenuController::createOrderFromMenu(QListWidget *menuListWidget, int client
     }
 
     QString dishName = selectedItem->text();
-    int quantity = 1; // Exemple d'entrée utilisateur.
+    int quantity = QRandomGenerator::global()->bounded(1, 8);
+
 
     QList<OrderItem> items = {{dishName, quantity}};
     orderModel->addOrder(clientId, tableId, items);
+
+    // Mettre à jour la quantité des ingrédients
+    updateIngredientQuantities(dishName, quantity);
+}
+
+void MenuController::updateIngredientQuantities(const QString &dishName, int quantity) {
+    QSqlQuery query;
+    query.prepare("SELECT i.ingredient_id, mi.quantity FROM menu_ingredients mi JOIN menu m ON mi.menu_id = m.menu_id JOIN ingredients i ON mi.ingredient_id = i.ingredient_id WHERE m.nom = :dishName");
+    query.bindValue(":dishName", dishName);
+
+    if (!query.exec()) {
+        qDebug() << "Erreur lors de la récupération des ingrédients du menu:" << query.lastError().text();
+        return;
+    }
+
+    while (query.next()) {
+        int ingredientId = query.value(0).toInt();
+        int ingredientQuantity = query.value(1).toInt();
+        Ingredient::updateQuantity(ingredientId, ingredientQuantity * quantity);
+    }
 }

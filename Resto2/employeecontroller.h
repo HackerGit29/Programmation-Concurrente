@@ -13,6 +13,9 @@ public:
     Employee *findEmployeeById(int employeeId);
     QVector<Employee*> getEmployees() const;
 
+    int getEmployeeCount() const;
+signals:
+    void employeeListChanged();
 private:
     QVector<Employee*> employees; // Liste des employés dans le restaurant
 };

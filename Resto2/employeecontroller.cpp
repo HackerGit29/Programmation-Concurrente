@@ -10,6 +10,7 @@ Employee *EmployeeController::findEmployeeById(int employeeId) {
     for (Employee *employee : employees) {
         if (employee->getId() == employeeId) {
             return employee;
+            emit employeeListChanged();
         }
     }
     return nullptr;
@@ -17,4 +18,9 @@ Employee *EmployeeController::findEmployeeById(int employeeId) {
 
 QVector<Employee*> EmployeeController::getEmployees() const {
     return employees;
+}
+
+
+int EmployeeController::getEmployeeCount() const {
+    return employees.size(); // Retourne le nombre d'employés
 }

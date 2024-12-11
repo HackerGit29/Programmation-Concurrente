@@ -2,11 +2,15 @@
 #define MAINWINDOW_H
 
 // #include "clientcontroller.h"
+#include "alertes.h"
+#include "gameSettings.h"
+#include "stockwindow.h"
 #include "tablecontroller.h"
 #include "clientcontroller.h"
 #include "employeecontroller.h"
 #include "order.h"
 #include "menucontroller.h"
+#include "controldialog.h"
 #include "client.h"
 #include <QKeyEvent>
 #include <QShortcut>
@@ -29,6 +33,8 @@
 #include <QGraphicsEllipseItem>
 #include <QFile>
 #include <QTextStream>
+#include <QThread>
+#include <QThreadPool>
 
 
 
@@ -54,7 +60,7 @@ signals:
 
 
 private slots:
-    void updateTime();
+    // void updateTime();
     void startSimulation();
     void pauseSimulation();
     void stopSimulation();
@@ -66,7 +72,9 @@ private slots:
     void handleSocketReadyRead();
     void handleClientCommand(int clientId, int tableId, const QList<OrderItem> &items);
     void serveOrder(int clientId);
-
+    void on_paramButton_clicked();
+    void on_livraisonButton_clicked();
+    void on_alertButton_clicked();
 
 private:
     Ui::MainWindow *ui;
@@ -83,9 +91,11 @@ private:
     QPropertyAnimation *diningAnimation;
     QPropertyAnimation *kitchenAnimation;
     QFile logFile;
-
-    QList<QGraphicsPixmapItem *> clientItems; // Liste des clients (objets graphiques)
-    QList<QTimeLine *> clientTimelines;       // Liste des timelines pour les animations
+    GameSettings *dialog;
+    stockWindow  *stockwindow;
+    ControlDialog *control;
+    //QList<QGraphicsPixmapItem *> clientItems; // Liste des clients (objets graphiques)
+    // QList<QTimeLine *> clientTimelines;       // Liste des timelines pour les animations
     QList<Client*> clients;
     ClientController clientController;
     Order *orderModel;
@@ -94,6 +104,14 @@ private:
     MenuController *menuController;
     QGraphicsEllipseItem* animatedCircle = nullptr;
     QTcpSocket *socket;
+    Alertes *alertes;
+    QThreadPool *threadPool;
+    QList<QThread*> clientTimelines;
+    QList<Client*> clientItems;
+
+
+
+
     // QPointF getTablePosition(int tableId);
     void createOrder(int clientId, int tableId);
     void markOrderReady(int tableId);
@@ -111,6 +129,8 @@ private:
     void updateCustomerInfo();
     // void updateTableInfo();
     void simulateClientActivity(Client* client, Table* table);
+    void showAlerts();
+
 
 
 };

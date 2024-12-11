@@ -14,6 +14,11 @@ public:
     Table* findAvailableTable(int groupSize);
     QVector<Table*> getTables() const;
 
+    int getTableCount() const; // Ajouté
+
+signals:
+    void tableUpdated(); // Ajouté
+
 
 private:
     QVector<Table*> tables; // Liste des tables dans le restaurant

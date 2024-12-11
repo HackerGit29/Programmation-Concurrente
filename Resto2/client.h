@@ -6,12 +6,13 @@
 #include <QGraphicsItem>
 #include <QObject>
 #include <QString>
+#include <QThread>
 
 class Client : public QObject {
     Q_OBJECT
 
 public:
-    explicit Client(int id, int groupSize, QObject* parent = nullptr); // Nouveau constructeur
+    explicit Client(int id, int groupSize, QObject* parent = nullptr);
 
     // Accesseurs
     int getId() const;
@@ -27,6 +28,13 @@ public:
     void moveToPosition(const QPointF& position);
     void removeFromScene();
 
+    // Méthodes pour gérer les threads
+    void startTimeline();
+    void pauseTimeline();
+    void stopTimeline();
+    void setDuration(int duration);
+    int duration() const;
+
 signals:
     void orderPlaced(int groupSize);
     void mealFinished();
@@ -40,6 +48,10 @@ private:
     bool isConsuming;   // Si le client est en train de manger
     QGraphicsPixmapItem* clientImage; // Représentation graphique
     QGraphicsScene* scene;           // Scène où le client est affiché
+    QThread* timeline;               // Thread pour gérer la timeline du client
+    int timelineDuration;            // Durée de la timeline en secondes
+
+    void runTimeline();
 };
 
 #endif // CLIENT_H

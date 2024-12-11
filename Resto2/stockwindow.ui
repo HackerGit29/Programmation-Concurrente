@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>stockWindow</class>
- <widget class="QMainWindow" name="stockWindow">
+ <widget class="QDialog" name="stockWindow">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -13,45 +13,32 @@
   <property name="windowTitle">
    <string>Gestion des Stocks</string>
   </property>
-  <widget class="QWidget" name="centralwidget">
-   <layout class="QHBoxLayout" name="horizontalLayout">
-    <item>
-     <widget class="QLabel" name="imageLabel">
-      <property name="enabled">
-       <bool>true</bool>
-      </property>
-      <property name="minimumSize">
-       <size>
-        <width>369</width>
-        <height>200</height>
-       </size>
-      </property>
-      <property name="styleSheet">
-       <string notr="true">background-image: url(:/build/Desktop_Qt_MinGW_64_bit_31ccaa-Release/release/img/market.jpeg);</string>
-      </property>
-      <property name="pixmap">
-       <pixmap>:/images/livreur_cartons.png</pixmap>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignmentFlag::AlignCenter</set>
-      </property>
-     </widget>
-    </item>
-    <item>
-     <layout class="QVBoxLayout" name="formLayout">
-      <item>
-       <widget class="QWidget" name="formWidget" native="true">
-        <property name="enabled">
-         <bool>true</bool>
-        </property>
-        <property name="minimumSize">
-         <size>
-          <width>0</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="styleSheet">
-         <string notr="true">QLineEdit {
+  <layout class="QHBoxLayout" name="horizontalLayout">
+   <item>
+    <widget class="QLabel" name="imageLabel">
+     <property name="minimumSize">
+      <size>
+       <width>369</width>
+       <height>200</height>
+      </size>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background-image: url(:/build/Desktop_Qt_MinGW_64_bit_31ccaa-Release/release/img/market.jpeg);</string>
+     </property>
+     <property name="pixmap">
+      <pixmap>:/images/livreur_cartons.png</pixmap>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignmentFlag::AlignCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <layout class="QVBoxLayout" name="formLayout">
+     <item>
+      <widget class="QWidget" name="formWidget" native="true">
+       <property name="styleSheet">
+        <string notr="true">QLineEdit {
   border-radius: 8px;
   border: 1px solid #e0e4e7;
   padding: 5px 15px;
@@ -74,122 +61,92 @@ QComboBox {
 QComboBox:focus {
   border: 1px solid #d0e3ff;
 }</string>
-        </property>
-        <layout class="QFormLayout" name="formLayout_2">
-         <property name="sizeConstraint">
-          <enum>QLayout::SizeConstraint::SetDefaultConstraint</enum>
-         </property>
-         <property name="horizontalSpacing">
-          <number>14</number>
-         </property>
-         <property name="verticalSpacing">
-          <number>6</number>
-         </property>
-         <property name="rightMargin">
-          <number>9</number>
-         </property>
-         <item row="0" column="0" colspan="2">
-          <widget class="QLabel" name="label">
+       </property>
+       <layout class="QFormLayout" name="formLayout_2">
+        <item row="0" column="0" colspan="2">
+         <widget class="QLabel" name="label">
+          <property name="text">
+           <string>Approvisionner le restaurant</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QLabel" name="nomDeLIngrDientLabel">
+          <property name="text">
+           <string>Nom de l'ingrédient</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QLineEdit" name="nomDeLIngrDientLineEdit"/>
+        </item>
+        <item row="2" column="0">
+         <widget class="QLabel" name="quantitLabel">
+          <property name="text">
+           <string>Quantité</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="1">
+         <widget class="QLineEdit" name="quantitLineEdit"/>
+        </item>
+        <item row="3" column="0">
+         <widget class="QLabel" name="typeLabel">
+          <property name="text">
+           <string>Type</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="1">
+         <widget class="QComboBox" name="typeComboBox">
+          <item>
            <property name="text">
-            <string>Approvisionner le restaurant</string>
+            <string>Légume</string>
            </property>
-          </widget>
-         </item>
-         <item row="1" column="0">
-          <widget class="QLabel" name="nomDeLIngrDientLabel">
+          </item>
+          <item>
            <property name="text">
-            <string>Nom de l'ingrédient</string>
+            <string>Viande</string>
            </property>
-          </widget>
-         </item>
-         <item row="1" column="1">
-          <widget class="QLineEdit" name="nomDeLIngrDientLineEdit"/>
-         </item>
-         <item row="2" column="0">
-          <widget class="QLabel" name="quantitLabel">
+          </item>
+          <item>
            <property name="text">
-            <string>Quantité</string>
+            <string>Céréale</string>
            </property>
-          </widget>
-         </item>
-         <item row="2" column="1">
-          <widget class="QLineEdit" name="quantitLineEdit"/>
-         </item>
-         <item row="3" column="0">
-          <widget class="QLabel" name="typeLabel">
+          </item>
+          <item>
            <property name="text">
-            <string>Type</string>
+            <string>Dérivé laitier</string>
            </property>
-          </widget>
-         </item>
-         <item row="3" column="1">
-          <widget class="QComboBox" name="typeComboBox">
-           <item>
-            <property name="text">
-             <string>Légume</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Viande</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Céréale</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Dérivé laitier</string>
-            </property>
-           </item>
-          </widget>
-         </item>
-        </layout>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="commandButton">
-        <property name="minimumSize">
-         <size>
-          <width>0</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="styleSheet">
-         <string>
-          QPushButton {
-              background-color: #4CAF50;
-              color: white;
-              border-radius: 10px;
-              padding: 10px;
-          }
-          QPushButton:hover {
-              background-color: #45a049;
-          }
-         </string>
-        </property>
-        <property name="text">
-         <string>Commander</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </item>
-   </layout>
-  </widget>
-  <widget class="QMenuBar" name="menubar">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>647</width>
-     <height>22</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="QStatusBar" name="statusbar"/>
+          </item>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="commandButton">
+       <property name="styleSheet">
+        <string>
+         QPushButton {
+             background-color: #4CAF50;
+             color: white;
+             border-radius: 10px;
+             padding: 10px;
+         }
+         QPushButton:hover {
+             background-color: #45a049;
+         }
+        </string>
+       </property>
+       <property name="text">
+        <string>Commander</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
  </widget>
  <resources>
   <include location="ressources.qrc"/>

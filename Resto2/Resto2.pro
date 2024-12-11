@@ -15,45 +15,48 @@ CONFIG += console
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    chaise.cpp \
-    chaisecontroller.cpp \
+    alertes.cpp \
     client.cpp \
     clientcontroller.cpp \
+    controldialog.cpp \
     employee.cpp \
     employeecontroller.cpp \
     gameSettings.cpp \
+    ingredient.cpp \
+    ingredientfactory.cpp \
     main.cpp \
     mainwindow.cpp \
     menu.cpp \
     menucontroller.cpp \
-    myRect.cpp \
     order.cpp \
     stockwindow.cpp \
     table.cpp \
     tablecontroller.cpp \
 
 HEADERS += \
-    chaise.h \
-    chaisecontroller.h \
+    alertes.h \
     client.h \
     clientcontroller.h \
+    controldialog.h \
     employee.h \
     employeecontroller.h \
     gameSettings.h \
-    ingredients.h \
+    ingredient.h \
+    ingredientfactory.h \
     mainwindow.h \
     menu.h \
     menucontroller.h \
-    myRect.h \
     order.h \
     stockwindow.h \
     table.h \
     tablecontroller.h
 
 FORMS += \
+    controldialog.ui \
     gameSettings.ui \
     mainwindow.ui \
     stockwindow.ui
+
 
 
 RESOURCES += ressources.qrc

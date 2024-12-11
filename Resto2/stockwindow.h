@@ -1,23 +1,31 @@
 #ifndef STOCKWINDOW_H
 #define STOCKWINDOW_H
 
-#include <QMainWindow>
-
+#include <QDialog>
+#include <QSqlDatabase>
+#include "ingredientfactory.h"
 
 namespace Ui {
-class stockWindow; // Utilisez le nom correct de la classe générée par Qt Designer
+class stockWindow;
 }
 
-class StockWindow : public QMainWindow // Héritez de QMainWindow
-{
+class stockWindow : public QDialog {
     Q_OBJECT
 
 public:
-    explicit StockWindow(QWidget *parent = nullptr);
-    ~StockWindow();
+    explicit stockWindow(QWidget *parent = nullptr);
+    ~stockWindow();
+
+    void setDatabase(QSqlDatabase db); // Pour connecter la base de données
+
+private slots:
+    void onCommandButtonClicked(); // Slot pour le bouton "Commander"
 
 private:
-    Ui::stockWindow *ui; // Utilisez le nom correct de la classe générée par Qt Designer
+    Ui::stockWindow *ui;
+    QSqlDatabase database; // Instance de la base de données
+
+    void insertIngredientIntoDatabase(Ingredient *ingredient); // Méthode pour insérer dans la base
 };
 
 #endif // STOCKWINDOW_H

@@ -1,6 +1,5 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "gameSettings.h"
 #include <QGraphicsPixmapItem>
 #include <QTimer>
 #include <QTimeLine>
@@ -12,16 +11,6 @@
 #include <QRandomGenerator>
 #include <QByteArray>
 
-
-// #include "settings.h"
-// #include "stockwindow.h"
-// #include "MyRect.h"
-
-
-
-// Instancier les fenêtres
-// Settings *settingsWindow;
-// StockWindow *stockWindow;
 
 
 MainWindow::MainWindow(QWidget *parent)
@@ -89,7 +78,7 @@ MainWindow::MainWindow(QWidget *parent)
     stockTimer->start(2000); // Rafraîchissement toutes les 2 secondes
 
     // controller du menu pour l'affichage sur l'écran
-    menuController->setupRefreshTimer(ui->menuListWidget, ui->orderList);
+    // menuController->setupRefreshTimer(ui->menuListWidget, ui->orderList);
 
     // connect(stockTimer, &QTimer::timeout, this, [this]() {
     //     qDebug() << "Mise à jour de l'ui activée !";
@@ -118,13 +107,8 @@ MainWindow::MainWindow(QWidget *parent)
         ui->orderList->clear();
     }
 
-
-
-
-
-
-    // Configuration du timer
-    connect(timer, &QTimer::timeout, this, &MainWindow::updateTime);
+    // // Configuration du timer
+    // connect(timer, &QTimer::timeout, this, &MainWindow::updateTime);
 
     // Configuration du fichier log
     QDir logDir(QCoreApplication::applicationDirPath() + "/log");
@@ -314,6 +298,7 @@ MainWindow::~MainWindow()
     delete socket;
     delete orderModel;
     delete menuController;
+    delete threadPool;
 
 }
 
@@ -348,6 +333,9 @@ void MainWindow::openSettingsDialog() {
     }
 }
 
+
+
+// Commencer la simulation
 void MainWindow::startSimulation() {
     if (!isRunning) {
         isRunning = true;
@@ -355,7 +343,7 @@ void MainWindow::startSimulation() {
         timeScale = simulationSpeed;
         timer->start(1000 / timeScale);
 
-        logMessage("Simulation démarrée");
+        qDebug() << "Simulation démarrée";
         simulationTime = startTime.hour() * 3600 + startTime.minute() * 60;
 
         // Création de clients
@@ -375,31 +363,35 @@ void MainWindow::startSimulation() {
         } else {
             qDebug() << "Aucune table disponible pour un groupe de taille" << groupSize;
         }
-
-        // Mise à jour des informations
-        // updateCustomerInfo();
-        // updateTableInfo();
     }
 }
-
-
 
 void MainWindow::createOrder(int clientId, int tableId) {
     QList<Menu> menuItems = menuController->getAllMenus();
     if (menuItems.isEmpty()) {
-        qDebug() << "Menu vide : impossible de passer une commande.";
+        qDebug() << "Menu vide : impossible de passer une commande.";
         return;
     }
 
-    int randomIndex = QRandomGenerator::global()->bounded(menuItems.size());
-    QString dishName = menuItems[randomIndex].getName();
-    int quantity = QRandomGenerator::global()->bounded(1, 8);
+    int totalQuantity = QRandomGenerator::global()->bounded(1, 8);
+    QList<OrderItem> items;
 
-    QList<OrderItem> items = {{dishName, quantity}};
+    for (int i = 0; i < totalQuantity; ++i) {
+        int randomIndex = QRandomGenerator::global()->bounded(menuItems.size());
+        QString dishName = menuItems[randomIndex].getName();
+        int quantity = 1; // Chaque menu est commandé une fois
+        items.append({dishName, quantity});
+    }
+
     orderModel->addOrder(clientId, tableId, items);
 
+    // Mettre à jour la quantité des ingrédients pour chaque menu commandé
+    for (const auto &item : items) {
+        menuController->updateIngredientQuantities(item.first, item.second);
+    }
+
     qDebug() << "Commande créée pour le client" << clientId << ":"
-             << dishName << "x" << quantity;
+             << items;
 }
 
 void MainWindow::markOrderReady(int tableId) {
@@ -417,8 +409,6 @@ void MainWindow::markOrderReady(int tableId) {
     qDebug() << "Commande prête pour la table" << tableId;
 }
 
-
-
 void MainWindow::onOrderAdded(int clientId, int tableId) {
     qDebug() << "Commande ajoutée:" << clientId << tableId;
 
@@ -433,7 +423,6 @@ void MainWindow::onOrderAdded(int clientId, int tableId) {
         simulateClientActivity(client, table);
     }
 }
-
 
 void MainWindow::onOrderRemoved(int clientId) {
     qDebug() << "Commande servie pour le client" << clientId;
@@ -451,8 +440,8 @@ void MainWindow::onOrderRemoved(int clientId) {
     QByteArray data = QString("ORDER_REMOVED:%1").arg(clientId).toUtf8();
     socket->write(data);
 }
-void MainWindow::handleClientCommand(int clientId, int tableId, const QList<OrderItem> &items)
-{
+
+void MainWindow::handleClientCommand(int clientId, int tableId, const QList<OrderItem> &items) {
     qDebug() << "Commande reçue pour le client" << clientId << "à la table" << tableId;
 
     QString orderDescription = QString("Client %1 - Table %2:\n").arg(clientId).arg(tableId);
@@ -499,7 +488,7 @@ void MainWindow::handleClientCommand(int clientId, int tableId, const QList<Orde
             // Supprimer le client de la scène
             diningScene->removeItem(table->getGraphicsItem());
 
-            // Supprimer la commande de la scène après 2 seconde
+            // Supprimer la commande de la scène après 2 secondes
             QTimer::singleShot(2000, [this, orderCircle]() {
                 diningScene->removeItem(orderCircle);
                 delete orderCircle;
@@ -515,8 +504,6 @@ void MainWindow::serveOrder(int clientId) {
     onOrderRemoved(clientId);  // Exemple pour marquer la commande comme servie
 }
 
-
-
 void MainWindow::handleSocketReadyRead() {
     while (socket->canReadLine()) {
         QByteArray data = socket->readLine().trimmed();
@@ -524,31 +511,52 @@ void MainWindow::handleSocketReadyRead() {
     }
 }
 
+void MainWindow::simulateClientActivity(Client* client, Table* table) {
+    // Logique pour simuler l'activité du client
+    if (client->getIsSeated()) {
+        // Si le client est assis, on peut simuler son activité
+        qDebug() << "Simuler l'activité du client" << client->getId() << "à la table" << table->getId();
+
+        // Exemple de simulation d'activité : passation de commande, consommation, etc.
+        if (!client->getHasOrdered()) {
+            client->setHasOrdered(true); // Marquer le client comme ayant commandé
+            createOrder(client->getId(), table->getId()); // Créer une commande pour ce client
+        }
+
+        if (!client->getIsConsuming()) {
+            client->setConsuming(true); // Marquer le client comme consommant
+            qDebug() << "Client" << client->getId() << "est en train de manger à la table" << table->getId();
+        }
+    }
+}
+
+void MainWindow::showAlerts() {
+    QDialog dialog(this);
+    alertes->showAlerts(&dialog, clients, tableController.getTables(), employeeController.getEmployees());
+}
 
 
 
-// Pause sur la simulation
-
-void MainWindow::pauseSimulation()
-{
+// Le mode pause de la simulation
+void MainWindow::pauseSimulation() {
     if (isRunning) {
         isRunning = false;
         timer->stop();
 
-        for (auto timeline : clientTimelines) {
-            if (timeline) {
-                timeline->setPaused(true);
-            }
-        }
+        // for (auto timeline : clientTimelines) {
+        //     if (timeline) {
+        //         timeline->setPaused(true);
+        //     }
+        // }
 
         logMessage("Simulation mise en pause");
     }
 }
 
 
-// Stop la simulation et update les scenes
-void MainWindow::stopSimulation()
-{
+
+// Stopper la simulation
+void MainWindow::stopSimulation() {
     if (isRunning) {
         pauseSimulation();
     }
@@ -559,54 +567,41 @@ void MainWindow::stopSimulation()
     // Nettoyage de la scène
     diningScene->clear();
 
-    // Supprimer les timelines
+    // Suppression des timelines
     for (auto timeline : clientTimelines) {
         delete timeline;
     }
     clientTimelines.clear();
 
-    // Supprimer les items clients
+    // Suppression des items clients
     for (auto client : clientItems) {
         delete client;
     }
     clientItems.clear();
+
     logMessage("Simulation arrêtée");
 }
 
 
-// Callback pour refresh le temps
-void MainWindow::updateTime()
-{
-    simulationTime += timeScale;
-    int hours = simulationTime / 3600;
-    int minutes = (simulationTime % 3600) / 60;
-    int seconds = simulationTime % 60;
 
-    ui->timeButton->setText(QString("Heure : %1:%2:%3")
-                                .arg(hours)
-                                .arg(minutes, 2, 10, QChar('0'))
-                                .arg(seconds, 2, 10, QChar('0')));
-
-    logMessage(QString("Temps mis à jour : %1:%2:%3")
-                   .arg(hours)
-                   .arg(minutes, 2, 10, QChar('0'))
-                   .arg(seconds, 2, 10, QChar('0')));
-}
+// Accelerer la simulation
 
 void MainWindow::accelSimulation()
 {
     timeScale = (timeScale == 1) ? 2 : 1; // Basculer entre vitesse normale et accélérée
     timer->setInterval(1000 / timeScale); // Ajuster l'intervalle du timer
 
-    for (auto timeline : clientTimelines) {
-        if (timeline) {
-            timeline->setDuration(timeline->duration() / timeScale);
-        }
-    }
+    // for (auto timeline : clientTimelines) {
+    //     if (timeline) {
+    //         timeline->setDuration(timeline->duration() / timeScale);
+    //     }
+    // }
 
     logMessage(timeScale == 2 ? "Mode simulation accéléré activé" : "Mode simulation normal activé");
 }
 
+
+// Journalisation les events du programme
 void MainWindow::logMessage(const QString &message)
 {
     if (logFile.isOpen()) {
@@ -617,75 +612,12 @@ void MainWindow::logMessage(const QString &message)
 }
 
 
-// void MainWindow::keyPressEvent(QKeyEvent *event) {
-//     if (isRunning && myRect) { // Ensure myRect is initialized
-//         qreal step = 10.0;
-//         QRectF sceneBounds = diningScene->sceneRect(); // Use diningScene
-
-//         if (event->key() == Qt::Key_Left && myRect->x() - step >= sceneBounds.left()) {
-//             myRect->setPos(myRect->x() - step, myRect->y());
-//         } else if (event->key() == Qt::Key_Right && myRect->x() + step + myRect->boundingRect().width() <= sceneBounds.right()) {
-//             myRect->setPos(myRect->x() + step, myRect->y());
-//         } else if (event->key() == Qt::Key_Up && myRect->y() - step >= sceneBounds.top()) {
-//             myRect->setPos(myRect->x(), myRect->y() - step);
-//         } else if (event->key() == Qt::Key_Down && myRect->y() + step + myRect->boundingRect().height() <= sceneBounds.bottom()) {
-//             myRect->setPos(myRect->x(), myRect->y() + step);
-//         }
-
-//         // Log x-coordinate to file
-//         QFile file("movement_log.txt");
-//         if (file.open(QIODevice::Append | QIODevice::Text)) {
-//             QTextStream out(&file);
-//             out << "x: " << myRect->x() << "\n";
-//         }
-//         file.close();
-
-//         qDebug() << "MyRect moved to (" << myRect->x() << "," << myRect->y() << ")";
-//     } else {
-//         QMainWindow::keyPressEvent(event); // Default behavior
-//     }
-// }
-
-// void MainWindow::openStockManagement()
-// {
-//     // Créer une instance de StockManagement
-//     StockWindow *stockWindow = new StockWindow(this); // Passer `this` comme parent
-//     stockWindow->show(); // Afficher la fenêtre
-// }
-
-// void MainWindow::openSettings()
-// {
-//     settingsDialog->show(); // Afficher la fenêtre Settings
-// }
-
-// void MainWindow::applySettings()
-// {
-//     QTime startTime = settingsDialog->getStartTime();
-//     int groupSize = settingsDialog->getGroupSize();
-//     int simulationSpeed = settingsDialog->getSimulationSpeed();
-
-//     // Mettre à jour les paramètres de la simulation
-//     timer->setInterval(1000 / simulationSpeed);
-//     timeScale = simulationSpeed;
-//     groupSize = groupSize;
-
-//     // Autres mises à jour basées sur les paramètres
-//     logMessage(QString("Paramètres appliqués : Heure de démarrage : %1, Taille max du groupe : %2, Vitesse de simulation : %3, Son : %4")
-//                    .arg(startTime.toString())
-//                    .arg(groupSize)
-//                    .arg(simulationSpeed));
-// }
-
-
-
-
-
-
+// Mettre à jour la barre de progression du stock en fonction de la quantité maximale pour un ingrédient.
 void MainWindow::updateStockLevelsProgressBar() {
     QSqlQuery query;
     int totalQuantite = 0;
     int totalIngredients = 0;
-    int quantiteMax = 100; // Quantité maximale pour un ingrédient
+    int quantiteMax = 100;
 
     // Requête SQL pour récupérer les quantités actuelles
     if (query.exec("SELECT quantite FROM ingredients")) {
@@ -791,7 +723,7 @@ void MainWindow::updateTableSeatsProgressBar() {
 
 
 
-
+// Mettre à jour les détails du resto
 void MainWindow::updateCustomerInfo() {
     int totalClients = clients.size();
     int waitingClients = 0;
@@ -852,54 +784,40 @@ void MainWindow::updateCustomerInfo() {
 
 
 
-// void MainWindow::updateTableInfo() {
-//     int totalTables = tableController.getTables().size();
-//     int occupiedTables = 0;
-
-//     for (const auto& table : tableController.getTables()) {
-//         if (table->isOccupied()) {
-//             occupiedTables++;
-//         }
-//     }
-
-//     int availableTables = totalTables - occupiedTables;
-
-//     QString tableInfo = QString(
-//                             "<p><b>Infos tables:</b></p>"
-//                             "<p>- Total tables: %1</p>"
-//                             "<p>- Tables occupées: %2</p>"
-//                             "<p>- Tables disponibles: %3</p>")
-//                             .arg(totalTables)
-//                             .arg(occupiedTables)
-//                             .arg(availableTables);
-
-//     ui->tableInfoTextBrowser->setHtml(tableInfo);
-// }
-
-
-
-
-
-void MainWindow::simulateClientActivity(Client* client, Table* table) {
-    // Logique pour simuler l'activité du client
-    if (client->getIsSeated()) {
-        // Si le client est assis, on peut simuler son activité
-        qDebug() << "Simuler l'activité du client" << client->getId() << "à la table" << table->getId();
-
-        // Exemple de simulation d'activité : passation de commande, consommation, etc.
-        if (!client->getHasOrdered()) {
-            client->setHasOrdered(true); // Marquer le client comme ayant commandé
-            createOrder(client->getId(), table->getId()); // Créer une commande pour ce client
-        }
-
-        if (!client->getIsConsuming()) {
-            client->setConsuming(true); // Marquer le client comme consommant
-            qDebug() << "Client" << client->getId() << "est en train de manger à la table" << table->getId();
-        }
-    }
-        // Mise à jour après départ
-            // updateCustomerInfo();
-            // updateTableInfo();
+// Ouvrir le panneau de configuration de la simulation
+void MainWindow::on_paramButton_clicked()
+{
+    GameSettings *dialog = new GameSettings();
+    dialog->setWindowModality(Qt::WindowModality::NonModal);
+    dialog->setMinimumWidth(410);
+    dialog->setMinimumHeight(310);
+    dialog->show();
 
 }
+
+
+
+// Ouvrir le menu de gestion du stock des ingrédients
+void MainWindow::on_livraisonButton_clicked()
+{
+    stockWindow *stockWindow = new class stockWindow();
+    stockWindow->setWindowModality(Qt::WindowModality::NonModal);
+    // dialog->setMinimumWidth(410);
+    // dialog->setMinimumHeight(310);
+    stockWindow->show();
+}
+
+
+
+// Ouvrir le menu de controle d'affichage des alertes
+void MainWindow::on_alertButton_clicked()
+{
+    ControlDialog *control = new ControlDialog();
+    control->setWindowModality(Qt::WindowModality::NonModal);
+    // dialog->setMinimumWidth(410);
+    // dialog->setMinimumHeight(310);
+    control->show();
+}
+
+
 

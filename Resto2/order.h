@@ -21,8 +21,13 @@ public:
     explicit Order(QObject *parent = nullptr);
 
     void addOrder(int clientId, int tableId, const QList<OrderItem> &items);
+    QList<OrderDetails> getOrders();
+
+
     void removeOrder(int clientId);
     QList<OrderItem> getItemsForClient(int clientId) const;
+
+
 
     // Nouvelle méthode pour obtenir toutes les commandes
     QList<OrderDetails> getOrders() const;

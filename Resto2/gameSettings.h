@@ -3,10 +3,19 @@
 
 
 #include <QDialog>
+#include <QLineEdit>
+#include <QPushButton>
+#include <QLabel>
+
+
+QT_BEGIN_NAMESPACE
 
 namespace Ui {
 class GameSettings;
 }
+
+QT_END_NAMESPACE
+
 
 class GameSettings : public QDialog {
     Q_OBJECT
@@ -22,12 +31,6 @@ public:
 private:
     Ui::GameSettings *ui;
 };
-
-
-
-
-
-
 
 
 

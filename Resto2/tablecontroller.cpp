@@ -12,6 +12,8 @@ Table *TableController::findTableById(int tableId) {
     for (Table *table : tables) {
         if (table->getId() == tableId) {
             return table;
+            emit tableUpdated();
+
         }
     }
     return nullptr;
@@ -31,4 +33,9 @@ Table* TableController::findAvailableTable(int groupSize) {
 
 QVector<Table*> TableController::getTables() const {
     return tables;
+}
+
+
+int TableController::getTableCount() const {
+    return tables.size(); // Retourne le nombre de tables
 }
