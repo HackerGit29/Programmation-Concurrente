@@ -81,45 +81,24 @@ QComboBox:focus {
          <widget class="QLineEdit" name="nomDeLIngrDientLineEdit"/>
         </item>
         <item row="2" column="0">
-         <widget class="QLabel" name="quantitLabel">
+         <widget class="QLabel" name="dishNameLabel">
+          <property name="text">
+           <string>Recette</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="1">
+         <widget class="QLineEdit" name="dishNameLineEdit"/>
+        </item>
+        <item row="3" column="0">
+         <widget class="QLabel" name="typeLabel">
           <property name="text">
            <string>Quantité</string>
           </property>
          </widget>
         </item>
-        <item row="2" column="1">
-         <widget class="QLineEdit" name="quantitLineEdit"/>
-        </item>
-        <item row="3" column="0">
-         <widget class="QLabel" name="typeLabel">
-          <property name="text">
-           <string>Type</string>
-          </property>
-         </widget>
-        </item>
         <item row="3" column="1">
-         <widget class="QComboBox" name="typeComboBox">
-          <item>
-           <property name="text">
-            <string>Légume</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Viande</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Céréale</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Dérivé laitier</string>
-           </property>
-          </item>
-         </widget>
+         <widget class="QLineEdit" name="quantitLineEdit"/>
         </item>
        </layout>
       </widget>

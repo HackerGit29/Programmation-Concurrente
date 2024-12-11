@@ -1,40 +1,61 @@
-#include "order.h"
+#ifndef ORDER_H
+#define ORDER_H
 
+#include <QObject>
 #include <QString>
-#include <QSqlError>
+#include <QList>
+#include <QPair>
 #include <QSqlQuery>
-#include <QDateTime>
+#include <QSqlError>
 #include <QDebug>
 
+using OrderItem = QPair<QString, int>; // Nom du plat et quantité.
 
+struct OrderDetails {
+    int clientId;
+    int tableId;
+    QList<OrderItem> items; // Liste des plats avec leurs quantités.
+};
 
+class Order : public QObject {
+    Q_OBJECT
+
+public:
+    explicit Order(QObject *parent = nullptr);
+
+    void addOrder(int clientId, int tableId, const QList<OrderItem> &items);
+    void removeOrder(int clientId);
+    QList<OrderItem> getItemsForClient(int clientId) const;
+    QList<OrderDetails> getOrders() const;
+
+signals:
+    void orderAdded(int clientId, int tableId);
+    void orderRemoved(int clientId);
+
+private:
+    QList<OrderDetails> orders; // Stockage des commandes.
+};
+
+#endif // ORDER_H
+
+#include "order.h"
 
 Order::Order(QObject *parent) : QObject(parent) {}
 
 void Order::addOrder(int clientId, int tableId, const QList<OrderItem> &items) {
     QSqlQuery query;
-    query.prepare("INSERT INTO commandes (client_id, table_id, heure_commande, statut) VALUES (:client_id, :table_id, :heure_commande, :statut)");
-    query.bindValue(":client_id", clientId);
-    query.bindValue(":table_id", tableId);
-    query.bindValue(":heure_commande", QDateTime::currentDateTime());
-    query.bindValue(":statut", "En cours");
 
-    if (!query.exec()) {
-        qDebug() << "Erreur lors de l'insertion de la commande:" << query.lastError().text();
-        return;
-    }
+    for (const auto &item : items) {
+        query.prepare("INSERT INTO commandes (client_id, table_id, dish_name, quantity) "
+                      "VALUES (:client_id, :table_id, :dish_name, :quantity)");
+        query.bindValue(":client_id", clientId);
+        query.bindValue(":table_id", tableId);
+        query.bindValue(":dish_name", item.first);
+        query.bindValue(":quantity", item.second);
 
-    int commandeId = query.lastInsertId().toInt();
-
-    for (const OrderItem &item : items) {
-        QSqlQuery menuQuery;
-        menuQuery.prepare("INSERT INTO menu_ingredients (menu_id, ingredient_id, quantite) VALUES (:menu_id, :ingredient_id, :quantite)");
-        menuQuery.bindValue(":menu_id", commandeId);
-        menuQuery.bindValue(":ingredient_id", item.first);
-        menuQuery.bindValue(":quantite", item.second);
-
-        if (!menuQuery.exec()) {
-            qDebug() << "Erreur lors de l'insertion des ingrédients du menu:" << menuQuery.lastError().text();
+        if (!query.exec()) {
+            qDebug() << "Erreur lors de l'insertion de la commande :" << query.lastError().text();
+            return;
         }
     }
 
@@ -47,7 +68,6 @@ void Order::addOrder(int clientId, int tableId, const QList<OrderItem> &items) {
     emit orderAdded(clientId, tableId);
 }
 
-
 void Order::removeOrder(int clientId) {
     auto it = std::remove_if(orders.begin(), orders.end(), [clientId](const OrderDetails &order) {
         return order.clientId == clientId;
@@ -55,10 +75,9 @@ void Order::removeOrder(int clientId) {
 
     if (it != orders.end()) {
         orders.erase(it, orders.end());
-        emit orderRemoved(clientId); // Signaler qu'une commande a été supprimée
+        emit orderRemoved(clientId);
     }
 }
-
 
 QList<OrderItem> Order::getItemsForClient(int clientId) const {
     for (const auto &order : orders) {
@@ -69,17 +88,6 @@ QList<OrderItem> Order::getItemsForClient(int clientId) const {
     return {};
 }
 
-
-
-
-
-
-
-
-
-
-
-
-QList<OrderDetails> Order::getOrders() {
+QList<OrderDetails> Order::getOrders() const {
     return orders;
 }

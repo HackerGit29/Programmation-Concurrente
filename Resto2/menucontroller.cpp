@@ -1,5 +1,4 @@
 #include "menucontroller.h"
-#include "ingredient.h"
 #include <QSqlQuery>
 #include <QSqlError>
 #include <QDebug>
@@ -44,19 +43,16 @@ void MenuController::createOrderFromMenu(QListWidget *menuListWidget, int client
     updateIngredientQuantities(dishName, quantity);
 }
 
-void MenuController::updateIngredientQuantities(const QString &dishName, int quantity) {
+void MenuController::updateIngredientQuantities(const QString& dishName, int quantity) {
     QSqlQuery query;
-    query.prepare("SELECT i.ingredient_id, mi.quantity FROM menu_ingredients mi JOIN menu m ON mi.menu_id = m.menu_id JOIN ingredients i ON mi.ingredient_id = i.ingredient_id WHERE m.nom = :dishName");
-    query.bindValue(":dishName", dishName);
+    query.prepare("UPDATE ingredients SET quantite = quantite - :quantity WHERE dish_name = :dish_name");
+    query.bindValue(":quantity", quantity);
+    query.bindValue(":dish_name", dishName);
 
     if (!query.exec()) {
-        qDebug() << "Erreur lors de la récupération des ingrédients du menu:" << query.lastError().text();
-        return;
-    }
-
-    while (query.next()) {
-        int ingredientId = query.value(0).toInt();
-        int ingredientQuantity = query.value(1).toInt();
-        Ingredient::updateQuantity(ingredientId, ingredientQuantity * quantity);
+        qDebug() << "Erreur lors de la mise à jour des ingrédients:" << query.lastError().text();
     }
 }
+
+
+

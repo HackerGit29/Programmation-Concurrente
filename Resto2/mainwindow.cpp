@@ -254,25 +254,25 @@ void MainWindow::loadInventoryData() {
     // employeeController.addEmployee(maitreHotel);
     // diningScene->addItem(maitreHotel->getGraphicsItem());
 
-    // Employee *chefDeRang = new Employee(2, "Daniel", "Chef de Rang", ":build/Desktop_Qt_MinGW_64_bit_31ccaa-Release/release/img/rang.png");
-    // chefDeRang->setPosition(100, 50);
-    // employeeController.addEmployee(chefDeRang);
-    // diningScene->addItem(chefDeRang->getGraphicsItem());
+    Employee *chefDeRang = new Employee(2, "Daniel", "Chef de Rang", ":build/Desktop_Qt_MinGW_64_bit_31ccaa-Release/release/img/rang.png");
+    chefDeRang->setPosition(100, 50);
+    employeeController.addEmployee(chefDeRang);
+    diningScene->addItem(chefDeRang->getGraphicsItem());
 
-    // Employee *serveur1 = new Employee(3, "Steve", "Serveur", ":build/Desktop_Qt_MinGW_64_bit_31ccaa-Release/release/img/serveur.png");
-    // serveur1->setPosition(150, 50);
-    // employeeController.addEmployee(serveur1);
-    // diningScene->addItem(serveur1->getGraphicsItem());
+    Employee *serveur1 = new Employee(3, "Steve", "Serveur", ":build/Desktop_Qt_MinGW_64_bit_31ccaa-Release/release/img/serveur.png");
+    serveur1->setPosition(150, 50);
+    employeeController.addEmployee(serveur1);
+    diningScene->addItem(serveur1->getGraphicsItem());
 
-    // Employee *serveur2 = new Employee(4, "Bob", "Serveur", ":build/Desktop_Qt_MinGW_64_bit_31ccaa-Release/release/img/serveur.png");
-    // serveur2->setPosition(200, 50);
-    // employeeController.addEmployee(serveur2);
-    // diningScene->addItem(serveur2->getGraphicsItem());
+    Employee *serveur2 = new Employee(4, "Bob", "Serveur", ":build/Desktop_Qt_MinGW_64_bit_31ccaa-Release/release/img/serveur.png");
+    serveur2->setPosition(200, 50);
+    employeeController.addEmployee(serveur2);
+    diningScene->addItem(serveur2->getGraphicsItem());
 
-    // Employee *commis = new Employee(5, "Jacob", "Commis", ":build/Desktop_Qt_MinGW_64_bit_31ccaa-Release/release/img/commis.png");
-    // commis->setPosition(250, 50);
-    // employeeController.addEmployee(commis);
-    // diningScene->addItem(commis->getGraphicsItem());
+    Employee *commis = new Employee(5, "Jacob", "Commis", ":build/Desktop_Qt_MinGW_64_bit_31ccaa-Release/release/img/commis.png");
+    commis->setPosition(250, 50);
+    employeeController.addEmployee(commis);
+    diningScene->addItem(commis->getGraphicsItem());
 }
 
 MainWindow::~MainWindow()

@@ -3,7 +3,7 @@
 
 #include <QDialog>
 #include <QSqlDatabase>
-#include "ingredientfactory.h"
+#include "ingredient.h"
 
 namespace Ui {
 class stockWindow;
@@ -16,16 +16,16 @@ public:
     explicit stockWindow(QWidget *parent = nullptr);
     ~stockWindow();
 
-    void setDatabase(QSqlDatabase db); // Pour connecter la base de données
+    void setDatabase(QSqlDatabase db);
 
 private slots:
-    void onCommandButtonClicked(); // Slot pour le bouton "Commander"
+    void onCommandButtonClicked();
 
 private:
-    Ui::stockWindow *ui;
-    QSqlDatabase database; // Instance de la base de données
+    void insertIngredientIntoDatabase(Ingredient *ingredient);
 
-    void insertIngredientIntoDatabase(Ingredient *ingredient); // Méthode pour insérer dans la base
+    Ui::stockWindow *ui;
+    QSqlDatabase database;
 };
 
 #endif // STOCKWINDOW_H

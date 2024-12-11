@@ -1,8 +1,9 @@
 #include "stockwindow.h"
 #include "ui_stockwindow.h"
+#include "ingredientfactory.h"
 #include <QMessageBox>
 #include <QSqlQuery>
-#include <QDate>
+#include <QSqlError>
 
 stockWindow::stockWindow(QWidget *parent)
     : QDialog(parent),
@@ -24,20 +25,16 @@ void stockWindow::setDatabase(QSqlDatabase db) {
 void stockWindow::onCommandButtonClicked() {
     // Récupérer les données depuis les champs de saisie
     QString name = ui->nomDeLIngrDientLineEdit->text();
-    QString type = ui->typeComboBox->currentText();
     int quantity = ui->quantitLineEdit->text().toInt();
-    QDate receptionDate = QDate::currentDate();
-    QDate expirationDate = receptionDate.addDays(7); // Exemple : 7 jours de validité
+    QString dishName = ui->dishNameLineEdit->text();
 
-    if (name.isEmpty() || type.isEmpty() || quantity <= 0) {
+    if (name.isEmpty() || dishName.isEmpty() || quantity <= 0) {
         QMessageBox::warning(this, "Erreur", "Veuillez remplir tous les champs correctement.");
         return;
     }
 
     // Créer un ingrédient via la factory
-    Ingredient *ingredient = IngredientFactory::createIngredient(
-        -1, name, type, quantity, receptionDate, expirationDate
-        );
+    Ingredient *ingredient = IngredientFactory::createIngredient(-1, name, quantity, dishName);
 
     // Insérer dans la base de données
     insertIngredientIntoDatabase(ingredient);
@@ -45,7 +42,7 @@ void stockWindow::onCommandButtonClicked() {
     // Nettoyer les champs après insertion
     ui->nomDeLIngrDientLineEdit->clear();
     ui->quantitLineEdit->clear();
-    ui->typeComboBox->setCurrentIndex(0);
+    ui->dishNameLineEdit->clear();
 
     delete ingredient;
 }
@@ -57,17 +54,15 @@ void stockWindow::insertIngredientIntoDatabase(Ingredient *ingredient) {
     }
 
     QSqlQuery query;
-    query.prepare("INSERT INTO ingredients (nom, type, quantite, date_reception, date_peremption) "
-                  "VALUES (:nom, :type, :quantite, :date_reception, :date_peremption)");
+    query.prepare("INSERT INTO ingredients (nom, quantite, dish_name) "
+                  "VALUES (:nom, :quantite, :dish_name)");
     query.bindValue(":nom", ingredient->getName());
-    query.bindValue(":type", ingredient->getType());
     query.bindValue(":quantite", ingredient->getQuantity());
-    query.bindValue(":date_reception", ingredient->getReceptionDate());
-    query.bindValue(":date_peremption", ingredient->getExpirationDate());
+    query.bindValue(":dish_name", ingredient->getDishName());
 
     if (query.exec()) {
         QMessageBox::information(this, "Succès", "L'ingrédient a été ajouté avec succès.");
     } else {
-        QMessageBox::critical(this, "Erreur", "Impossible d'ajouter l'ingrédient dans la base de données.");
+        QMessageBox::critical(this, "Erreur", "Impossible d'ajouter l'ingrédient dans la base de données : " + query.lastError().text());
     }
 }

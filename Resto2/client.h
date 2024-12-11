@@ -41,6 +41,7 @@ signals:
     void clientLeft();
 
 private:
+
     int id;             // Son ID
     int groupSize;      // Nombre de personnes dans le groupe
     bool isSeated;      // Si le client est assis

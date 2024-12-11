@@ -17,8 +17,10 @@ public:
     void placeOrder();
     void finishMeal();
     void leaveRestaurant();
-    Client* findClientById(int clientId);
     void addClient(Client* newClient);
+    Client* findClientById(int clientId);
+
+
 
 
 private:

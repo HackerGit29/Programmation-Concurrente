@@ -10,25 +10,25 @@
 
 class Ingredient {
 public:
-    Ingredient(int id, const QString &name, const QString &type, int quantity, const QDate &receptionDate, const QDate &expirationDate);
+    // Constructeur
+    Ingredient(int id, const QString &name, int quantity, const QString &dishName);
 
+    // Accesseurs
     int getId() const;
     QString getName() const;
-    QString getType() const;
     int getQuantity() const;
-    QDate getReceptionDate() const;
-    QDate getExpirationDate() const;
+    QString getDishName() const;
 
+    // Méthodes statiques
     static QList<Ingredient> getAllIngredients();
     static void updateQuantity(int ingredientId, int quantity);
 
 private:
+    // Attributs
     int id;
-    QString name;
-    QString type;
-    int quantity;
-    QDate receptionDate;
-    QDate expirationDate;
+    QString name;          // Nom de l'ingrédient
+    int quantity;          // Quantité disponible
+    QString dishName;      // Nom du plat associé
 };
 
 #endif // INGREDIENT_H
