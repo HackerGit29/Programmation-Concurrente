@@ -1,0 +1,25 @@
+Projet : Simulation de Restaurant avec Qt
+
+Ce projet vise à simuler le fonctionnement d'un restaurant en utilisant Qt pour l'interface graphique. Les clients, les tables et les chaises sont représentés par des icônes et des images. Les interactions entre les éléments sont gérées via des contrôleurs. Les badges de shields.io indiquent l'état du projet et les dépendances.
+
+
+Fonctionnalités :
+
+Affichage des clients, tables et chaises.
+Interaction entre les éléments via des contrôleurs.
+Gestions de stocks
+
+Installation :
+
+Clonez le dépôt.
+Installez les dépendances.
+Compilez et exécutez le projet.
+
+
+Contributeurs :
+
+Ben MOMBOULI
+Monera BAYA
+Nadia TCHUENTE
+Sorel NKOUKA
+
