@@ -1,0 +1,372 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>ControlDialog</class>
+ <widget class="QDialog" name="ControlDialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>600</width>
+    <height>600</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Contrôle de l'état du restaurant</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">/* Background principal */
+QWidget {
+    background-color: #1e1e2e;
+    color: #ffffff;
+}
+
+/* Boutons */
+QPushButton {
+    selection-color: red;
+    border-radius: 10px;
+    padding: 10px;
+    color: white;
+    font: bold 14px &quot;Segoe UI&quot;;
+    background-color: #3a3a5f;
+    border: 2px solid #5e5edc;
+}
+
+QPushButton:hover {
+    background-color: #7366ff;
+    border-color: #8080ff;
+}
+
+QPushButton:pressed {
+    background-color: #282850;
+}
+
+/* Labels */
+QLabel {
+    font: bold 16px &quot;Segoe UI&quot;;
+    color: #ffffff;
+    background-color: transparent;
+    text-align: center;
+}
+
+/* Frames */
+QFrame {
+    background-color: #2e2e3e;
+    border: 2px solid #5e5edc;
+    border-radius: 10px;
+}
+
+/* Progress Bars */
+QProgressBar {
+    border: 2px solid #3a3a5f;
+    border-radius: 5px;
+    background: #2e2e3e;
+    text-align: center;
+    color: white;
+    font: bold 12px &quot;Segoe UI&quot;;
+}
+
+QProgressBar::chunk {
+    background-color: #7366ff;
+    border-radius: 5px;
+}
+
+/* Text Browsers */
+QTextBrowser {
+    border: 2px solid #3a3a5f;
+    border-radius: 10px;
+    background-color: #2e2e3e;
+    color: white;
+    font: 12px &quot;Segoe UI&quot;;
+    padding: 10px;
+}
+
+/* Table Views */
+QTableView {
+    border: 2px solid #3a3a5f;
+    border-radius: 10px;
+    background-color: #2e2e3e;
+    color: white;
+    font: 12px &quot;Segoe UI&quot;;
+    padding: 10px;
+}
+
+QTableView::item {
+    padding: 5px;
+}
+
+QTableView::item:selected {
+    background-color: #7366ff;
+    color: white;
+}
+
+/* List Widgets */
+QListWidget {
+    border: 2px solid #3a3a5f;
+    border-radius: 10px;
+    background-color: #2e2e3e;
+    color: white;
+    font: 12px &quot;Segoe UI&quot;;
+    padding: 10px;
+}
+
+QListWidget::item {
+    padding: 5px;
+}
+
+QListWidget::item:selected {
+    background-color: #7366ff;
+    color: white;
+}
+
+/* Dialogs */
+QDialog {
+    background-color: #1e1e2e;
+    color: #ffffff;
+    border-radius: 10px;
+}
+
+/* Scroll Bars */
+QScrollBar:vertical {
+    background: #2e2e3e;
+    width: 12px;
+    margin: 0px 0px 0px 0px;
+}
+
+QScrollBar::handle:vertical {
+    background: #7366ff;
+    min-height: 20px;
+    border-radius: 5px;
+}
+
+QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {
+    height: 0px;
+}
+
+QScrollBar:horizontal {
+    background: #2e2e3e;
+    height: 12px;
+    margin: 0px 0px 0px 0px;
+}
+
+QScrollBar::handle:horizontal {
+    background: #7366ff;
+    min-width: 20px;
+    border-radius: 5px;
+}
+
+QScrollBar::add-line:horizontal, QScrollBar::sub-line:horizontal {
+    width: 0px;
+}
+</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QLabel" name="titleLabel">
+     <property name="font">
+      <font>
+       <family>Segoe UI</family>
+       <pointsize>-1</pointsize>
+       <italic>false</italic>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="text">
+      <string>État des ressources et des clients</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignmentFlag::AlignCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="dashboardLayout">
+     <item>
+      <widget class="QFrame" name="clientsCard">
+       <property name="frameShape">
+        <enum>QFrame::Shape::StyledPanel</enum>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Shadow::Raised</enum>
+       </property>
+       <layout class="QVBoxLayout" name="clientsCardLayout">
+        <item>
+         <widget class="QLabel" name="clientsCardTitle">
+          <property name="font">
+           <font>
+            <family>Segoe UI</family>
+            <pointsize>-1</pointsize>
+            <italic>false</italic>
+            <bold>true</bold>
+           </font>
+          </property>
+          <property name="text">
+           <string>Clients</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignmentFlag::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="clientsCardValue">
+          <property name="font">
+           <font>
+            <family>Segoe UI</family>
+            <pointsize>-1</pointsize>
+            <italic>false</italic>
+            <bold>true</bold>
+           </font>
+          </property>
+          <property name="text">
+           <string>0</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignmentFlag::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </item>
+     <item>
+      <widget class="QFrame" name="tablesCard">
+       <property name="frameShape">
+        <enum>QFrame::Shape::StyledPanel</enum>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Shadow::Raised</enum>
+       </property>
+       <layout class="QVBoxLayout" name="tablesCardLayout">
+        <item>
+         <widget class="QLabel" name="tablesCardTitle">
+          <property name="font">
+           <font>
+            <family>Segoe UI</family>
+            <pointsize>-1</pointsize>
+            <italic>false</italic>
+            <bold>true</bold>
+           </font>
+          </property>
+          <property name="text">
+           <string>Tables</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignmentFlag::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="tablesCardValue">
+          <property name="font">
+           <font>
+            <family>Segoe UI</family>
+            <pointsize>-1</pointsize>
+            <italic>false</italic>
+            <bold>true</bold>
+           </font>
+          </property>
+          <property name="text">
+           <string>0</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignmentFlag::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </item>
+     <item>
+      <widget class="QFrame" name="staffCard">
+       <property name="frameShape">
+        <enum>QFrame::Shape::StyledPanel</enum>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Shadow::Raised</enum>
+       </property>
+       <layout class="QVBoxLayout" name="staffCardLayout">
+        <item>
+         <widget class="QLabel" name="staffCardTitle">
+          <property name="font">
+           <font>
+            <family>Segoe UI</family>
+            <pointsize>-1</pointsize>
+            <italic>false</italic>
+            <bold>true</bold>
+           </font>
+          </property>
+          <property name="text">
+           <string>Personnel</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignmentFlag::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="staffCardValue">
+          <property name="font">
+           <font>
+            <family>Segoe UI</family>
+            <pointsize>-1</pointsize>
+            <italic>false</italic>
+            <bold>true</bold>
+           </font>
+          </property>
+          <property name="text">
+           <string>0</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignmentFlag::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="statusLayout">
+     <item>
+      <widget class="QTableView" name="clientsTableView">
+       <property name="toolTip">
+        <string>Liste des clients et leur état</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QTableView" name="tablesTableView">
+       <property name="toolTip">
+        <string>Liste des tables et leur occupation</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QVBoxLayout" name="ingredientsLayout">
+     <item>
+      <widget class="QLabel" name="progressLabel">
+       <property name="text">
+        <string>Historique des alertes</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QTableView" name="alertsListWidget">
+       <property name="toolTip">
+        <string>Liste des ingrédients disponibles</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QVBoxLayout" name="alertsLayout"/>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

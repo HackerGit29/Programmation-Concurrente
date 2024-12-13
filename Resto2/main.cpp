@@ -11,7 +11,7 @@
 int main(int argc, char *argv[]) {
     QApplication a(argc, argv);
 
-    a.setWindowIcon(QIcon(":build/Desktop_Qt_MinGW_64_bit_31ccaa-Release/release/img/menu.png"));
+    a.setWindowIcon(QIcon(":img/menu.png"));
 
 
     MainWindow window;

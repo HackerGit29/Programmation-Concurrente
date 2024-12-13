@@ -12,6 +12,10 @@
 #include "menucontroller.h"
 #include "controldialog.h"
 #include "client.h"
+#include "fridgecontroller.h"
+#include "lavecontroller.h"
+#include "staff.h"
+#include "plongeurcontroller.h"
 #include <QKeyEvent>
 #include <QShortcut>
 #include <QTcpSocket>
@@ -20,9 +24,8 @@
 #include <QGraphicsView>
 #include <QGraphicsItem>
 #include <QGraphicsTextItem>
-// #include <QMediaPlayer>
-// #include <QAudioOutput>
 #include <QPropertyAnimation>
+#include <GraphicsPixmapItemWithProperties.h>
 #include <QMessageBox>
 #include <QTimeLine>
 #include <QList>
@@ -64,6 +67,7 @@ private slots:
     void startSimulation();
     void pauseSimulation();
     void stopSimulation();
+    void updateTime();            // Met à jour le temps de la simulation
     void accelSimulation();
     void updateStockLevelsProgressBar();
     void updateTableSeatsProgressBar();
@@ -77,6 +81,21 @@ private slots:
     void on_alertButton_clicked();
 
 private:
+
+    Staff *chefItem;    // Objet représentant le chef
+    Staff *server;  // Objet représentant le serveur
+    Staff* plongeur;
+
+    void setupStaff();
+    void movePlongeur();
+    void setupPlongeurMovement();
+    void moveChefToNextTask();
+    void moveChefBetweenComptoirAndFrigo();
+    void setupChefMovement();
+    void moveChefInKitchen();
+    void moveServerToClient(Client *client); // Déplacer le serveur vers un client
+    void moveClientToTable(Client *client, Table *table);
+
     Ui::MainWindow *ui;
     QSqlDatabase db;
     QTimer *timer;
@@ -88,6 +107,7 @@ private:
     QGraphicsScene *kitchenScene;  
     QGraphicsEllipseItem *diningItem;
     QGraphicsEllipseItem *kitchenItem;
+    GraphicsPixmapItemWithProperties *chef;
     QPropertyAnimation *diningAnimation;
     QPropertyAnimation *kitchenAnimation;
     QFile logFile;
@@ -95,19 +115,24 @@ private:
     stockWindow  *stockwindow;
     ControlDialog *control;
     //QList<QGraphicsPixmapItem *> clientItems; // Liste des clients (objets graphiques)
-    // QList<QTimeLine *> clientTimelines;       // Liste des timelines pour les animations
+    QList<QTimeLine *> clientTimelines;       // Liste des timelines pour les animations
     QList<Client*> clients;
     ClientController clientController;
     Order *orderModel;
     TableController tableController;
     EmployeeController employeeController;
+    FridgeController fridgeController;
+    LaveController laveController;
     MenuController *menuController;
     QGraphicsEllipseItem* animatedCircle = nullptr;
     QTcpSocket *socket;
     Alertes *alertes;
     QThreadPool *threadPool;
-    QList<QThread*> clientTimelines;
+    // QList<QThread*> clientTimelines;
     QList<Client*> clientItems;
+
+    QList<QPointF> chefTargets; // Liste des positions cibles
+    int currentTaskIndex;
 
 
 

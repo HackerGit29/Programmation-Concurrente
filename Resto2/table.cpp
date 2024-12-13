@@ -6,7 +6,7 @@
 Table::Table(int id, int capacity, const QString &imagePath, QObject *parent)
     : QObject(parent), QGraphicsPixmapItem(QPixmap(imagePath)),id(id), capacity(capacity), occupied(false) {
 
-    setScale(0.1); // Ajustez l'échelle selon vos besoins
+    setScale(1.0); // Ajustez l'échelle selon vos besoins
 
     setAcceptHoverEvents(true);
 

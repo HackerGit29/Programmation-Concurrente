@@ -23,7 +23,7 @@
       </size>
      </property>
      <property name="styleSheet">
-      <string notr="true">background-image: url(:/build/Desktop_Qt_MinGW_64_bit_31ccaa-Release/release/img/market.jpeg);</string>
+      <string notr="true">background-image: url(:img/market.jpeg);</string>
      </property>
      <property name="pixmap">
       <pixmap>:/images/livreur_cartons.png</pixmap>

@@ -3,7 +3,16 @@
 #include <QDebug>
 
 Client::Client(int id, int groupSize, QObject* parent)
-    : QObject(parent), id(id), groupSize(groupSize), isSeated(false), hasOrdered(false), isConsuming(false), clientImage(nullptr), scene(nullptr), timeline(nullptr), timelineDuration(0) {}
+    : QObject(parent), id(id), groupSize(groupSize), isSeated(false), hasOrdered(false), isConsuming(false), clientImage(nullptr), scene(nullptr), timeline(nullptr), timelineDuration(0) {
+
+
+    // Chargement d'une image PNG représentant le client
+    QPixmap pixmap(":/images/client.png"); // Chemin à adapter selon votre projet
+
+    // Création d'un QGraphicsPixmapItem pour représenter visuellement le client
+    clientImage = new QGraphicsPixmapItem(pixmap);
+    clientImage->setTransformationMode(Qt::SmoothTransformation);
+}
 
 int Client::getId() const {
     return id;

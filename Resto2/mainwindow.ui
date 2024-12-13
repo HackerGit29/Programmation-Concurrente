@@ -97,7 +97,7 @@ QTextBrowser {
          </property>
          <property name="icon">
           <iconset resource="ressources.qrc">
-           <normaloff>:/build/Desktop_Qt_MinGW_64_bit_31ccaa-Release/release/img/jouer.png</normaloff>:/build/Desktop_Qt_MinGW_64_bit_31ccaa-Release/release/img/jouer.png</iconset>
+           <normaloff>:/img/jouer.png</normaloff>:/img/jouer.png</iconset>
          </property>
          <property name="iconSize">
           <size>
@@ -114,7 +114,7 @@ QTextBrowser {
          </property>
          <property name="icon">
           <iconset resource="ressources.qrc">
-           <normaloff>:/build/Desktop_Qt_MinGW_64_bit_31ccaa-Release/release/img/pause.png</normaloff>:/build/Desktop_Qt_MinGW_64_bit_31ccaa-Release/release/img/pause.png</iconset>
+           <normaloff>:/img/pause.png</normaloff>:/img/pause.png</iconset>
          </property>
          <property name="iconSize">
           <size>
@@ -131,7 +131,7 @@ QTextBrowser {
          </property>
          <property name="icon">
           <iconset resource="ressources.qrc">
-           <normaloff>:/build/Desktop_Qt_MinGW_64_bit_31ccaa-Release/release/img/bouton-darret.png</normaloff>:/build/Desktop_Qt_MinGW_64_bit_31ccaa-Release/release/img/bouton-darret.png</iconset>
+           <normaloff>:/img/bouton-darret.png</normaloff>:/img/bouton-darret.png</iconset>
          </property>
          <property name="iconSize">
           <size>
@@ -148,7 +148,7 @@ QTextBrowser {
          </property>
          <property name="icon">
           <iconset resource="ressources.qrc">
-           <normaloff>:/build/Desktop_Qt_MinGW_64_bit_31ccaa-Release/release/img/avance-rapide.png</normaloff>:/build/Desktop_Qt_MinGW_64_bit_31ccaa-Release/release/img/avance-rapide.png</iconset>
+           <normaloff>:/img/avance-rapide.png</normaloff>:/img/avance-rapide.png</iconset>
          </property>
          <property name="iconSize">
           <size>
@@ -185,7 +185,7 @@ QTextBrowser {
          </property>
          <property name="icon">
           <iconset resource="ressources.qrc">
-           <normaloff>:/build/Desktop_Qt_MinGW_64_bit_31ccaa-Release/release/img/exclamation.png</normaloff>:/build/Desktop_Qt_MinGW_64_bit_31ccaa-Release/release/img/exclamation.png</iconset>
+           <normaloff>:/img/cercle.png</normaloff>:/img/cercle.png</iconset>
          </property>
          <property name="iconSize">
           <size>
@@ -202,7 +202,7 @@ QTextBrowser {
          </property>
          <property name="icon">
           <iconset resource="ressources.qrc">
-           <normaloff>:/build/Desktop_Qt_MinGW_64_bit_31ccaa-Release/release/img/inventaire (1).png</normaloff>:/build/Desktop_Qt_MinGW_64_bit_31ccaa-Release/release/img/inventaire (1).png</iconset>
+           <normaloff>:/img/inventaire (1).png</normaloff>:/img/inventaire (1).png</iconset>
          </property>
          <property name="iconSize">
           <size>
@@ -219,7 +219,7 @@ QTextBrowser {
          </property>
          <property name="icon">
           <iconset resource="ressources.qrc">
-           <normaloff>:/build/Desktop_Qt_MinGW_64_bit_31ccaa-Release/release/img/parametres.png</normaloff>:/build/Desktop_Qt_MinGW_64_bit_31ccaa-Release/release/img/parametres.png</iconset>
+           <normaloff>:/img/parametres.png</normaloff>:/img/parametres.png</iconset>
          </property>
          <property name="iconSize">
           <size>
@@ -356,7 +356,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
             </property>
             <property name="styleSheet">
              <string notr="true">QGraphicsView {
-    background-image: url(:/build/Desktop_Qt_MinGW_64_bit_31ccaa-Release/release/img/sol.png);
+    background-image: url(:img/sol.png);
     background-repeat: no-repeat;
     background-position: center;
 }</string>
@@ -412,7 +412,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
             </property>
             <property name="styleSheet">
              <string notr="true">QGraphicsView {
-    background-image: url(:/build/Desktop_Qt_MinGW_64_bit_31ccaa-Release/release/img/sol.png);
+    background-image: url(:img/sol.png);
     background-repeat: no-repeat;
     background-position: center;
 }</string>

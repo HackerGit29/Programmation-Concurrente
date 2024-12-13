@@ -1,10 +1,12 @@
+
 CREATE TABLE IF NOT EXISTS "commandes" (
-	"commande_id"	INTEGER,
-	"employe_id"	INTEGER,
-	"heure_commande"	DATETIME NOT NULL,
-	"statut"	VARCHAR(50) NOT NULL,
-	PRIMARY KEY("commande_id" AUTOINCREMENT),
-	FOREIGN KEY("employe_id") REFERENCES "employes"("employe_id")
+	"id"	INTEGER,
+	"client_id"	INTEGER NOT NULL,
+	"table_id"	INTEGER NOT NULL,
+	"dish_name"	TEXT NOT NULL,
+	"quantity"	INTEGER NOT NULL,
+	"created_at"	DATETIME DEFAULT CURRENT_TIMESTAMP,
+	PRIMARY KEY("id" AUTOINCREMENT)
 );
 CREATE TABLE IF NOT EXISTS "employes" (
 	"employe_id"	INTEGER,
@@ -15,11 +17,9 @@ CREATE TABLE IF NOT EXISTS "employes" (
 );
 CREATE TABLE IF NOT EXISTS "ingredients" (
 	"ingredient_id"	INTEGER,
-	"nom"	TEXT NOT NULL,
-	"type"	TEXT NOT NULL,
+	"dish_name"	TEXT NOT NULL,
 	"quantite"	INTEGER NOT NULL,
-	"date_reception"	DATE,
-	"date_peremption"	DATE,
+	"nom"	TEXT NOT NULL,
 	PRIMARY KEY("ingredient_id" AUTOINCREMENT)
 );
 CREATE TABLE IF NOT EXISTS "inventaire" (
@@ -37,14 +37,11 @@ CREATE TABLE IF NOT EXISTS "menu" (
 	"type_menu"	TEXT NOT NULL,
 	PRIMARY KEY("menu_id" AUTOINCREMENT)
 );
-CREATE TABLE IF NOT EXISTS "taches" (
-	"tache_id"	INTEGER,
-	"employe_id"	INTEGER,
-	"description"	TEXT NOT NULL,
-	"statut"	TEXT NOT NULL,
-	"heure_assignee"	DATETIME NOT NULL,
-	"heure_completee"	DATETIME,
-	PRIMARY KEY("tache_id" AUTOINCREMENT),
-	FOREIGN KEY("employe_id") REFERENCES "employes"("employe_id")
+CREATE TABLE IF NOT EXISTS "orders" (
+	"order_id"	INTEGER,
+	"client_id"	INTEGER NOT NULL,
+	"table_id"	INTEGER NOT NULL,
+	"dish_name"	TEXT NOT NULL,
+	"quantity"	INTEGER NOT NULL,
+	PRIMARY KEY("order_id" AUTOINCREMENT)
 );
-

@@ -1,5 +1,8 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "lave.h"
+#include "fridge.h"
+#include "staff.h"
 #include <QGraphicsPixmapItem>
 #include <QTimer>
 #include <QTimeLine>
@@ -23,9 +26,6 @@ MainWindow::MainWindow(QWidget *parent)
     diningScene(new QGraphicsScene(this)),
     kitchenScene(new QGraphicsScene(this)),
     logFile(QCoreApplication::applicationDirPath() + "/log/simulation.log"),
-    // mediaPlayer(new QMediaPlayer(this)),
-    // audioOutput(new QAudioOutput(this))
-    // settingsDialog(new Settings(this))
     clientController(nullptr),
     orderModel(new Order(this)),
     menuController(nullptr),
@@ -42,9 +42,7 @@ MainWindow::MainWindow(QWidget *parent)
         updateTableSeatsProgressBar();
         logMessage("Base de données connectée");
     }
-
-    // La sortie Audio
-    // mediaPlayer->setAudioOutput(audioOutput);
+    setupStaff();
 
 
     // Initialisation du socket
@@ -65,25 +63,15 @@ MainWindow::MainWindow(QWidget *parent)
 
    // update l'ui du stock
     QTimer *stockTimer = new QTimer(this);
-    // connect(stockTimer, &QTimer::timeout, this, &MainWindow::loadMenuData);
     connect(stockTimer, &QTimer::timeout, this, &MainWindow::loadStockInfo);
     connect(stockTimer, &QTimer::timeout, this, &MainWindow::updateStockLevelsProgressBar);
     connect(stockTimer, &QTimer::timeout, this, &MainWindow::updateTableSeatsProgressBar);
     connect(stockTimer, &QTimer::timeout, this, &MainWindow::loadInventoryData);
     connect(stockTimer, &QTimer::timeout, this, &MainWindow::loadMenuData);
     connect(stockTimer, &QTimer::timeout, this, &MainWindow::updateCustomerInfo);
-    // connect(stockTimer, &QTimer::timeout, this, &MainWindow::updateTableInfo);
 
 
     stockTimer->start(2000); // Rafraîchissement toutes les 2 secondes
-
-    // controller du menu pour l'affichage sur l'écran
-    // menuController->setupRefreshTimer(ui->menuListWidget, ui->orderList);
-
-    // connect(stockTimer, &QTimer::timeout, this, [this]() {
-    //     qDebug() << "Mise à jour de l'ui activée !";
-    //     updateStockLevelsProgressBar();
-    // });
 
 
     // Configuration des scènes
@@ -98,17 +86,14 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->pauseButton, &QPushButton::clicked, this, &MainWindow::pauseSimulation);
     connect(ui->stopButton, &QPushButton::clicked, this, &MainWindow::stopSimulation);
     connect(ui->accelButton, &QPushButton::clicked, this, &MainWindow::accelSimulation);
- //   connect(ui->livraisonButton, &QPushButton::clicked, this, &MainWindow::openStockManagement);
-//connect(ui->paramButton, &QPushButton::clicked, this, &MainWindow::openSettings);
-  //  connect(settingsDialog->getApplyButton(), &QPushButton::clicked, this, &MainWindow::applySettings);
 
     // Nettoyer la liste au démarrage
     if (ui->orderList) {
         ui->orderList->clear();
     }
 
-    // // Configuration du timer
-    // connect(timer, &QTimer::timeout, this, &MainWindow::updateTime);
+    // Configuration du timer
+    connect(timer, &QTimer::timeout, this, &MainWindow::updateTime);
 
     // Configuration du fichier log
     QDir logDir(QCoreApplication::applicationDirPath() + "/log");
@@ -136,6 +121,73 @@ bool MainWindow::connectToDatabase() {
 
 
 
+// Les méthodes de la cuisine
+void MainWindow::setupStaff() {
+    // Configuration du chef
+    QGraphicsPixmapItem *chefItem = new QGraphicsPixmapItem(QPixmap(":img/chef.png"));
+    chefItem->setPos(300, -60); // Position du chef
+    chefItem->setScale(0.1);  // Ajuste la taille si nécessaire
+    kitchenScene->addItem(chefItem);
+
+    // Configuration du serveur
+    QGraphicsPixmapItem *serverItem = new QGraphicsPixmapItem(QPixmap(":img/serve.png"));
+    serverItem->setPos(-100, -300); // Position du serveur
+    serverItem->setScale(0.1);  // Ajuste la taille si nécessaire
+    kitchenScene->addItem(serverItem);
+
+    // Configuration du plongeur
+    QGraphicsPixmapItem *plongeurItem = new QGraphicsPixmapItem(QPixmap(":img/plongeur.png"));
+    plongeurItem->setPos(50, 150); // Position du plongeur
+    plongeurItem->setScale(0.1);  // Ajuste la taille si nécessaire
+    kitchenScene->addItem(plongeurItem);
+
+    chefTargets = {
+        QPointF(300, -150), // Position cible 1
+        QPointF(50, -330),  // Position cible 2
+        QPointF(350, 200)   // Position cible 3
+    };
+    currentTaskIndex = 0;
+
+}
+
+
+// Gestion de taches par Chef
+void MainWindow::moveChefToNextTask() {
+    if (chefTargets.isEmpty()) {
+        qDebug() << "Aucune cible définie pour le chef.";
+        return;
+    }
+
+    // Vérifier si on a atteint la dernière cible
+    if (currentTaskIndex >= chefTargets.size()) {
+        qDebug() << "Simulation terminée.";
+        return; // Simulation terminée, ne pas bouger le chef
+    }
+
+    // Définir la prochaine position
+    QPointF nextTarget = chefTargets[currentTaskIndex];
+    currentTaskIndex++; // Passer à la prochaine cible
+
+    // Configurer l'animation
+    QPropertyAnimation *animation = new QPropertyAnimation(chefItem, "pos");
+    animation->setDuration(2000); // Durée de l'animation (en millisecondes)
+    animation->setStartValue(chefItem->pos());
+    animation->setEndValue(nextTarget);
+    animation->setEasingCurve(QEasingCurve::InOutQuad);
+
+    // Connecter la fin de l'animation pour lancer la suivante
+    connect(animation, &QPropertyAnimation::finished, this, &MainWindow::moveChefToNextTask);
+
+    animation->start();
+    qDebug() << "Chef se déplace vers :" << nextTarget;
+}
+
+
+
+
+
+// Chargement des éléments du stock de l'ui
+
 void MainWindow::loadMenuData() {
     QSqlQuery query("SELECT nom FROM menu");
 
@@ -154,6 +206,8 @@ void MainWindow::loadMenuData() {
 }
 
 
+
+// Chargement du stock
 void MainWindow::loadStockInfo() {
     QSqlQuery query("SELECT nom, quantite FROM ingredients");
 
@@ -177,6 +231,8 @@ void MainWindow::loadStockInfo() {
     ui->stockInfoTextBrowser->setHtml(html);
 }
 
+
+// Chargement de l'inventaire
 void MainWindow::loadInventoryData() {
     QSqlQuery query("SELECT nom_item, quantite FROM inventaire");
 
@@ -206,73 +262,135 @@ void MainWindow::loadInventoryData() {
     // Afficher le HTML dans le widget tableInfoTextBrowser
     ui->tableInfoTextBrowser->setHtml(html);
 
+
+    // Elements de la cuisine
+
+    // table essaie0
+    Lave *lave1 = new Lave(1, 1, ":img/frigo.png");
+    lave1->setPosition(350, 200);
+    lave1->setScale(1);
+    laveController.addLave(lave1);
+    kitchenScene->addItem(lave1->getGraphicsItem());
+
+    Lave *lave2 = new Lave(2, 2, ":img/plaque.jpeg");
+    lave2->setPosition(50, -330);
+    laveController.addLave(lave2);
+    kitchenScene->addItem(lave2->getGraphicsItem());
+
+    Lave *lave3 = new Lave(3, 3, ":img/plaque.jpeg");
+    lave3->setPosition(127, -330);
+    laveController.addLave(lave1);
+    kitchenScene->addItem(lave3->getGraphicsItem());
+
+    Lave *lave4 = new Lave(4, 4, ":img/cuisine.png");
+    lave4->setPosition(350, -150);
+    lave4->setScale(0.1);
+    laveController.addLave(lave4);
+    kitchenScene->addItem(lave4->getGraphicsItem());
+
+
+    Fridge *fridge1 = new Fridge(1, 4, ":img/compt.png");
+    fridge1->setPosition(-170, -330);
+    fridge1->setScale(00.1);  // Ajuste la taille si nécessaire
+    fridgeController.addFridge(fridge1);
+    kitchenScene->addItem(fridge1->getGraphicsItem());
+
+
+    Fridge *fridge2 = new Fridge(2, 4, ":img/lave-vaisselle.png");
+    fridge2->setPosition(-170,170);
+    fridgeController.addFridge(fridge2);
+    kitchenScene->addItem(fridge2->getGraphicsItem());
+
+
    // Ajouter des tables
 
-    Table *table1 = new Table(1, 4, ":build/Desktop_Qt_MinGW_64_bit_31ccaa-Release/release/img/cercle_2.png");
-    table1->setPosition(200, 0);
-    tableController.addTable(table1);
-    diningScene->addItem(table1->getGraphicsItem());
+    Table *table10 = new Table(10, 8, ":img/table_3.png");
+    table10->setPosition(-200, -210);
+    tableController.addTable(table10);
+    diningScene->addItem(table10->getGraphicsItem());
 
-    Table *table4 = new Table(4, 8, ":build/Desktop_Qt_MinGW_64_bit_31ccaa-Release/release/img/cercle.png");
-    table4->setPosition(150, 0);
-    tableController.addTable(table4);
-    diningScene->addItem(table4->getGraphicsItem());
+    Table *table11 = new Table(11, 8, ":img/table_3.png");
+    table11->setPosition(-200, -210);
+    tableController.addTable(table11);
+    diningScene->addItem(table11->getGraphicsItem());
 
-    // Table *table5 = new Table(5, 4, ":build/Desktop_Qt_MinGW_64_bit_31ccaa-Release/release/img/cercle.png");
-    // table5->setPosition(0, 300);
-    // tableController.addTable(table5);
-    // diningScene->addItem(table5->getGraphicsItem());
+    Table *table12 = new Table(4, 1, ":img/table_3.png");
+    table12->setPosition(-200, -210);
+    tableController.addTable(table12);
+    diningScene->addItem(table12->getGraphicsItem());
 
-    // Table *table6 = new Table(6, 8, ":build/Desktop_Qt_MinGW_64_bit_31ccaa-Release/release/img/table_1.png");
-    // table1->setPosition(160, 200);
-    // tableController.addTable(table6);
-    // diningScene->addItem(table6->getGraphicsItem());
+    Table *table2 = new Table(4, 1, ":img/table_3.png");
+    table2->setPosition(120, -110);
+    tableController.addTable(table2);
+    diningScene->addItem(table2->getGraphicsItem());
 
-    // Table *table7 = new Table(7, 8, ":build/Desktop_Qt_MinGW_64_bit_31ccaa-Release/release/img/table_1.png");
-    // table7->setPosition(260, 160);
-    // tableController.addTable(table7);
-    // diningScene->addItem(table7->getGraphicsItem());
+    Table *table3 = new Table(3, 8, ":img/table_3.png");
+    table3->setPosition(40, -110);
+    tableController.addTable(table3);
+    diningScene->addItem(table3->getGraphicsItem());
 
-    // Table *table8 = new Table(8, 8, ":build/Desktop_Qt_MinGW_64_bit_31ccaa-Release/release/img/table_1.png");
-    // table8->setPosition(310, 160);
+    Table *table6 = new Table(6, 8, ":img/table_3.png");
+    table6->setPosition(-90, -110);
+    tableController.addTable(table6);
+    diningScene->addItem(table6->getGraphicsItem());
+
+    Table *table5 = new Table(5, 4, ":img/table_3.png");
+    table5->setPosition(-120, 160);
+    tableController.addTable(table5);
+    diningScene->addItem(table5->getGraphicsItem());
+
+    Table *table7 = new Table(7, 8, ":img/table_3.png");
+    table7->setPosition(-40, 160);
+    tableController.addTable(table7);
+    diningScene->addItem(table7->getGraphicsItem());
+
+    // Table *table8 = new Table(8, 4, ":img/table_3.png");
+    // table8->setPosition(40, 160);
     // tableController.addTable(table8);
     // diningScene->addItem(table8->getGraphicsItem());
 
-    // Table *table2 = new Table(2, 8, ":build/Desktop_Qt_MinGW_64_bit_31ccaa-Release/release/img/table_1.png");
-    // table2->setPosition(60, 160);
-    // tableController.addTable(table2);
-    // diningScene->addItem(table2->getGraphicsItem());
+    // Table *table9 = new Table(4, 4, ":img/table_3.png");
+    // table9->setPosition(120, 160);
+    // tableController.addTable(table9);
+    // diningScene->addItem(table9->getGraphicsItem());
 
-    // Table *table3 = new Table(3, 8, ":build/Desktop_Qt_MinGW_64_bit_31ccaa-Release/release/img/table_1.png");
-    // table3->setPosition(310, 160);
-    // tableController.addTable(table3);
-    // diningScene->addItem(table3->getGraphicsItem());
 
-    // // Ajouter des employés
-    // Employee *maitreHotel = new Employee(1, "Maxim", "Maître d'Hôtel", ":build/Desktop_Qt_MinGW_64_bit_31ccaa-Release/release/img/maitre.png");
-    // maitreHotel->setPosition(50, 50);
-    // employeeController.addEmployee(maitreHotel);
-    // diningScene->addItem(maitreHotel->getGraphicsItem());
+    // Table *table14 = new Table(14, 8, ":img/table_3.png");
+    // table14->setPosition(40, 60);
+    // tableController.addTable(table14);
+    // diningScene->addItem(table14->getGraphicsItem());
 
-    Employee *chefDeRang = new Employee(2, "Daniel", "Chef de Rang", ":build/Desktop_Qt_MinGW_64_bit_31ccaa-Release/release/img/rang.png");
-    chefDeRang->setPosition(100, 50);
-    employeeController.addEmployee(chefDeRang);
-    diningScene->addItem(chefDeRang->getGraphicsItem());
+    // Table *table16 = new Table(16, 8, ":img/table_3.png");
+    // table16->setPosition(-40, 60);
+    // tableController.addTable(table16);
+    // diningScene->addItem(table16->getGraphicsItem());
 
-    Employee *serveur1 = new Employee(3, "Steve", "Serveur", ":build/Desktop_Qt_MinGW_64_bit_31ccaa-Release/release/img/serveur.png");
-    serveur1->setPosition(150, 50);
-    employeeController.addEmployee(serveur1);
-    diningScene->addItem(serveur1->getGraphicsItem());
+    // Table *table15 = new Table(15, 4, ":img/table_3.png");
+    // table15->setPosition(-90, 60);
+    // tableController.addTable(table15);
+    // diningScene->addItem(table15->getGraphicsItem());
 
-    Employee *serveur2 = new Employee(4, "Bob", "Serveur", ":build/Desktop_Qt_MinGW_64_bit_31ccaa-Release/release/img/serveur.png");
-    serveur2->setPosition(200, 50);
-    employeeController.addEmployee(serveur2);
-    diningScene->addItem(serveur2->getGraphicsItem());
 
-    Employee *commis = new Employee(5, "Jacob", "Commis", ":build/Desktop_Qt_MinGW_64_bit_31ccaa-Release/release/img/commis.png");
-    commis->setPosition(250, 50);
-    employeeController.addEmployee(commis);
-    diningScene->addItem(commis->getGraphicsItem());
+
+    // Employee *chefDeRang = new Employee(2, "Daniel", "Chef de Rang", ":img/rang.png");
+    // chefDeRang->setPosition(100, 50);
+    // employeeController.addEmployee(chefDeRang);
+    // diningScene->addItem(chefDeRang->getGraphicsItem());
+
+    // Employee *serveur1 = new Employee(3, "Steve", "Serveur", ":img/serveur.png");
+    // serveur1->setPosition(150, 50);
+    // employeeController.addEmployee(serveur1);
+    // diningScene->addItem(serveur1->getGraphicsItem());
+
+    // Employee *serveur2 = new Employee(4, "Bob", "Serveur", ":img/serveur.png");
+    // serveur2->setPosition(200, 50);
+    // employeeController.addEmployee(serveur2);
+    // diningScene->addItem(serveur2->getGraphicsItem());
+
+    // Employee *commis = new Employee(5, "Jacob", "Commis", ":img/commis.png");
+    // commis->setPosition(250, 50);
+    // employeeController.addEmployee(commis);
+    // diningScene->addItem(commis->getGraphicsItem());
 }
 
 MainWindow::~MainWindow()
@@ -308,10 +426,6 @@ void MainWindow::paintEvent(QPaintEvent *event) {
 }
 
 
-// Lancement de la simulation
-
-
-
 // Ajouter les membres suivants à la classe MainWindow :
 int maxGroupSize = 8;    // Par défaut
 int simulationSpeed = 1; // Par défaut
@@ -340,31 +454,125 @@ void MainWindow::startSimulation() {
     if (!isRunning) {
         isRunning = true;
 
-        timeScale = simulationSpeed;
-        timer->start(1000 / timeScale);
+        // timeScale = simulationSpeed;
+        timer->start(1000);
 
         qDebug() << "Simulation démarrée";
-        simulationTime = startTime.hour() * 3600 + startTime.minute() * 60;
+        // simulationTime = startTime.hour() * 3600 + startTime.minute() * 60;
+
+
+        // Cuisine Motion et gestion des états
+        Lave *chef = new Lave(5, 4, ":img/chef.png");
+        chef->setPosition(350, -150);
+        chef->setScale(0.1);
+        laveController.addLave(chef);
+        kitchenScene->addItem(chef->getGraphicsItem());
+
+
+
+        // ---- Animation du déplacement du Chef ----
+        QTimeLine *chefTimeline = new QTimeLine(5000, this); // Durée 5 secondes
+        chefTimeline->setFrameRange(0, 100);
+        chefTimeline->setLoopCount(0); // Déplacement en boucle
+
+
+        connect(chefTimeline, &QTimeLine::frameChanged, this, [=](int frame) {
+            // Interpolation linéaire entre les coordonnées initiales (300, -100) et finales (127, -300)
+            qreal progress = frame / 100.0;
+            qreal x = 300 + progress * (127 - 300);
+            qreal y = -100 + progress * (-300 + 100);
+            chef->getGraphicsItem()->setPos(x, y);
+        });
+
+        connect(chefTimeline, &QTimeLine::finished, this, [=]() {
+            qDebug() << "Chef est arrivé à destination (127, -300).";
+        });
+
+        chefTimeline->start();
+        clientTimelines.append(chefTimeline);
+
+        Lave *personnage1 = new Lave(6, 4, ":img/commis.png");
+        personnage1->setPosition(350, -150);
+        personnage1->setScale(0.1);
+
+
+        laveController.addLave(personnage1);
+        kitchenScene->addItem(personnage1->getGraphicsItem());
+
+        QTimeLine *personnage1Timeline = new QTimeLine(5000, this); // Durée 5 secondes
+        personnage1Timeline->setFrameRange(0, 100);
+        personnage1Timeline->setLoopCount(0); // Déplacement en boucle
+
+        connect(personnage1Timeline, &QTimeLine::frameChanged, this, [=](int frame) {
+            // Interpolation linéaire entre les coordonnées initiales (60, 150) et finales (-100, -290)
+            qreal progress = frame / 100.0;
+            qreal x = 60 + progress * (-100 - 60);
+            qreal y = 150 + progress * (-290 - 150);
+            personnage1->getGraphicsItem()->setPos(x, y);
+        });
+
+        personnage1Timeline->start();
+        clientTimelines.append(personnage1Timeline);
+
+        Lave *personnage2 = new Lave(7, 4, ":img/commis.png");
+        personnage2->setPosition(350, -150);
+        personnage2->setScale(0.1);
+        laveController.addLave(personnage2);
+        kitchenScene->addItem(personnage2->getGraphicsItem());
+
+        QTimeLine *personnage2Timeline = new QTimeLine(5000, this); // Durée 5 secondes
+        personnage2Timeline->setFrameRange(0, 100);
+        personnage2Timeline->setLoopCount(0); // Déplacement en boucle
+
+        connect(personnage2Timeline, &QTimeLine::frameChanged, this, [=](int frame) {
+            // Interpolation linéaire entre les coordonnées initiales (-100, -310) et finales (70, 150)
+            qreal progress = frame / 100.0;
+            qreal x = -100 + progress * (70 + 100);
+            qreal y = -310 + progress * (150 + 310);
+            personnage2->getGraphicsItem()->setPos(x, y);
+        });
+
+        personnage2Timeline->start();
+        clientTimelines.append(personnage2Timeline);
+
+
+        // Sallon motion et gestion des états
+
 
         // Création de clients
-        int clientId = QRandomGenerator::global()->bounded(1, 100);
-        int groupSize = QRandomGenerator::global()->bounded(1, maxGroupSize);
 
-        auto newClient = new Client(clientId, groupSize, this);
-        clients.append(newClient);
+                // Configurer un QTimer pour créer des clients toutes les 2 secondes
+                QTimer* clientCreationTimer = new QTimer(this);
+                connect(clientCreationTimer, &QTimer::timeout, this, [=, this]() {
+                    // Création d'un seul client à chaque tick
+                    int clientId = QRandomGenerator::global()->bounded(1, 100);
+                    int groupSize = QRandomGenerator::global()->bounded(1, maxGroupSize);
 
-        Table* table = tableController.findAvailableTable(groupSize);
-        if (table) {
-            table->setOccupied(true);
-            newClient->setSeated(true);
-            qDebug() << "Client" << clientId << "installé à la table" << table->getId();
+                    auto newClient = new Client(clientId, groupSize, this);
+                    clients.append(newClient);
 
-            createOrder(clientId, table->getId());
-        } else {
-            qDebug() << "Aucune table disponible pour un groupe de taille" << groupSize;
+                    Table* table = tableController.findAvailableTable(groupSize);
+                    if (table) {
+                        table->setOccupied(true);
+                        newClient->setSeated(true);
+                        qDebug() << "Client" << clientId << "installé à la table" << table->getId();
+
+                        createOrder(clientId, table->getId());
+                    } else {
+                        qDebug() << "Aucune table disponible pour un groupe de taille" << groupSize;
+                    }
+
+                    // Optionnel : Limiter la taille de la liste des clients pour éviter la surcharge
+                    if (clients.size() > 100) { // Supposons une limite de 100 clients
+                        delete clients.takeFirst(); // Supprime les plus anciens
+                    }
+                });
+
+                clientCreationTimer->start(3000); // Intervalle de 3 secondes
+            }
         }
-    }
-}
+
+
 
 void MainWindow::createOrder(int clientId, int tableId) {
     QList<Menu> menuItems = menuController->getAllMenus();
@@ -461,27 +669,27 @@ void MainWindow::handleClientCommand(int clientId, int tableId, const QList<Orde
         return;
     }
 
-    // Représentation graphique de la commande
-    QGraphicsEllipseItem *orderCircle = new QGraphicsEllipseItem(0, 0, 20, 20);
-    orderCircle->setBrush(Qt::yellow);
-    diningScene->addItem(orderCircle);
+    // Charger l'image PNG
+    QPixmap orderPixmap(":/images/order.png"); // Assurez-vous que le chemin est correct
+    QGraphicsPixmapItem *orderItem = new QGraphicsPixmapItem(orderPixmap);
 
-    // Positionner le cercle sur la même position que la table
-    orderCircle->setPos(table->x(), table->y()); // Utilise la position de la table
+    // Positionner l'image sur la même position que la table
+    orderItem->setPos(table->x(), table->y()); // Utilise la position de la table
 
-    // Vous pouvez ajouter un décalage si vous souhaitez que le cercle soit légèrement au-dessus de la table
-    orderCircle->setPos(table->x() + 4, table->y() - 4);
+    // Ajouter l'image à la scène
+    diningScene->addItem(orderItem);
 
     // Délai pour la préparation de la commande (ex : 5 secondes)
-    QTimer::singleShot(5000, [this, clientId, tableId, items, orderCircle, table]() {
+    QTimer::singleShot(5000, [this, clientId, tableId, items, orderItem, table]() {
         // Simuler la préparation de la commande (Livraison)
         qDebug() << "Commande livrée pour le client" << clientId << "à la table" << tableId;
 
-        // Représentation de la livraison (changer la couleur du cercle)
-        orderCircle->setBrush(Qt::green);
+        // Représentation de la livraison (changer l'image pour une autre image PNG)
+        QPixmap deliveredPixmap(":/img/alimentation-saine.ico"); // Assurez-vous que le chemin est correct
+        orderItem->setPixmap(deliveredPixmap);
 
         // Délai pour que le client consomme la commande (ex : 3 secondes)
-        QTimer::singleShot(3000, [this, clientId, tableId, orderCircle, table]() {
+        QTimer::singleShot(3000, [this, clientId, tableId, orderItem, table]() {
             // Simuler la consommation de la commande
             qDebug() << "Client" << clientId << "a terminé sa commande à la table" << tableId;
 
@@ -489,13 +697,14 @@ void MainWindow::handleClientCommand(int clientId, int tableId, const QList<Orde
             diningScene->removeItem(table->getGraphicsItem());
 
             // Supprimer la commande de la scène après 2 secondes
-            QTimer::singleShot(2000, [this, orderCircle]() {
-                diningScene->removeItem(orderCircle);
-                delete orderCircle;
+            QTimer::singleShot(2000, [this, orderItem]() {
+                diningScene->removeItem(orderItem);
+                delete orderItem;
             });
         });
     });
 }
+
 
 void MainWindow::serveOrder(int clientId) {
     qDebug() << "Commande servie pour le client" << clientId;
@@ -543,16 +752,32 @@ void MainWindow::pauseSimulation() {
         isRunning = false;
         timer->stop();
 
-        // for (auto timeline : clientTimelines) {
-        //     if (timeline) {
-        //         timeline->setPaused(true);
-        //     }
-        // }
+        for (auto timeline : clientTimelines) {
+            if (timeline) {
+                timeline->setPaused(true);
+            }
+        }
 
         logMessage("Simulation mise en pause");
     }
 }
 
+
+// Accelerer la simulation
+
+void MainWindow::accelSimulation()
+{
+    timeScale = (timeScale == 1) ? 2 : 1; // Basculer entre vitesse normale et accélérée
+    timer->setInterval(1000 / timeScale); // Ajuster l'intervalle du timer
+
+    for (auto timeline : clientTimelines) {
+        if (timeline) {
+            timeline->setDuration(timeline->duration() / timeScale);
+        }
+    }
+
+    logMessage(timeScale == 2 ? "Mode simulation accéléré activé" : "Mode simulation normal activé");
+}
 
 
 // Stopper la simulation
@@ -566,6 +791,8 @@ void MainWindow::stopSimulation() {
 
     // Nettoyage de la scène
     diningScene->clear();
+    kitchenScene->clear();
+
 
     // Suppression des timelines
     for (auto timeline : clientTimelines) {
@@ -583,24 +810,24 @@ void MainWindow::stopSimulation() {
 }
 
 
-
-// Accelerer la simulation
-
-void MainWindow::accelSimulation()
+// Mettre à jour le timer
+void MainWindow::updateTime()
 {
-    timeScale = (timeScale == 1) ? 2 : 1; // Basculer entre vitesse normale et accélérée
-    timer->setInterval(1000 / timeScale); // Ajuster l'intervalle du timer
+    simulationTime += timeScale;
+    int hours = simulationTime / 3600;
+    int minutes = (simulationTime % 3600) / 60;
+    int seconds = simulationTime % 60;
 
-    // for (auto timeline : clientTimelines) {
-    //     if (timeline) {
-    //         timeline->setDuration(timeline->duration() / timeScale);
-    //     }
-    // }
+    ui->timeButton->setText(QString("Heure : %1:%2:%3")
+                                .arg(hours)
+                                .arg(minutes, 2, 10, QChar('0'))
+                                .arg(seconds, 2, 10, QChar('0')));
 
-    logMessage(timeScale == 2 ? "Mode simulation accéléré activé" : "Mode simulation normal activé");
+    logMessage(QString("Temps mis à jour : %1:%2:%3")
+                   .arg(hours)
+                   .arg(minutes, 2, 10, QChar('0'))
+                   .arg(seconds, 2, 10, QChar('0')));
 }
-
-
 // Journalisation les events du programme
 void MainWindow::logMessage(const QString &message)
 {
@@ -617,7 +844,7 @@ void MainWindow::updateStockLevelsProgressBar() {
     QSqlQuery query;
     int totalQuantite = 0;
     int totalIngredients = 0;
-    int quantiteMax = 100;
+    int quantiteMax = 1000;
 
     // Requête SQL pour récupérer les quantités actuelles
     if (query.exec("SELECT quantite FROM ingredients")) {
@@ -818,6 +1045,7 @@ void MainWindow::on_alertButton_clicked()
     // dialog->setMinimumHeight(310);
     control->show();
 }
+
 
 
 
